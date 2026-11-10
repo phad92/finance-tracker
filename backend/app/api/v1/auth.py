@@ -89,3 +89,4 @@ async def get_me(
 ) -> User:
     """Retrieve the currently authenticated user's profile."""
     return current_user
+

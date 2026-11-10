@@ -132,3 +132,4 @@ class NetWorthSummary(BaseModel):
     assets_by_category: Dict[str, float]
     currency_exposure: Dict[str, float]
     as_of_date: date
+

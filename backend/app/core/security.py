@@ -61,3 +61,4 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: Optional[timed
     }
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+

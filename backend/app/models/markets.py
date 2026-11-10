@@ -91,3 +91,4 @@ class InstrumentPrice(Base):
     __table_args__ = (
         UniqueConstraint("instrument_id", "price_date", "source", name="uq_instrument_price_date_source"),
     )
+

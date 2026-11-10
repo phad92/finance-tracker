@@ -144,3 +144,4 @@ class FinancialTransaction(Base):
     is_reconciled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     account: Mapped["FinancialAccount"] = relationship("FinancialAccount", back_populates="transactions")
+

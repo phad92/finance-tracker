@@ -72,3 +72,4 @@ async def get_current_active_superuser(
             detail="Insufficient permissions",
         )
     return current_user
+

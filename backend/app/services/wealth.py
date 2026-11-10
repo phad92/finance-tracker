@@ -88,3 +88,4 @@ async def calculate_net_worth(
         currency_exposure={k: round(v, 2) for k, v in currency_exposure.items()},
         as_of_date=date.today(),
     )
+

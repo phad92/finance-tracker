@@ -93,3 +93,4 @@ class InvestmentTransactionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+

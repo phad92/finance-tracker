@@ -83,3 +83,4 @@ async def convert_amount(
     rate = await get_exchange_rate(db, from_currency, to_currency, rate_date)
     converted = round(amount * rate, 4)
     return converted, rate
+

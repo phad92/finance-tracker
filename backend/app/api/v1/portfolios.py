@@ -292,3 +292,4 @@ async def record_transaction(
         notes=new_tx.notes,
         created_at=new_tx.created_at,
     )
+

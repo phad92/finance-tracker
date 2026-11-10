@@ -142,3 +142,4 @@ class Dividend(Base):
 
     portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="dividends")
     instrument: Mapped["Instrument"] = relationship("Instrument")
+
