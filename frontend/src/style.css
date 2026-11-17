@@ -2,9 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color-scheme: dark;
+@layer base {
+  :root {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color-scheme: light;
+    --background: 248 250 252;
+    --foreground: 15 23 42;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+    --border: 226 232 240;
+    --muted: 241 245 249;
+    --muted-foreground: 100 116 139;
+    --sidebar: 255 255 255;
+    --sidebar-border: 226 232 240;
+    --scrollbar-track: 241 245 249;
+    --scrollbar-thumb: 203 213 225;
+    --scrollbar-thumb-hover: 148 163 184;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 9 13 22;
+    --foreground: 248 250 252;
+    --card: 15 23 42;
+    --card-foreground: 248 250 252;
+    --border: 30 41 59;
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
+    --sidebar: 11 17 32;
+    --sidebar-border: 30 41 59;
+    --scrollbar-track: 9 13 22;
+    --scrollbar-thumb: 30 41 59;
+    --scrollbar-thumb-hover: 51 65 85;
+  }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+  }
 }
 
 code, kbd, samp, pre {
@@ -18,15 +53,14 @@ code, kbd, samp, pre {
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: rgb(var(--scrollbar-track));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: rgb(var(--scrollbar-thumb));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgb(var(--scrollbar-thumb-hover));
 }
-

@@ -5,6 +5,7 @@ from app.api.v1.forecasting import router as forecasting_router
 from app.api.v1.intelligence import router as intelligence_router
 from app.api.v1.markets import router as markets_router
 from app.api.v1.options import router as options_router
+from app.api.v1.pensions import router as pensions_router
 from app.api.v1.portfolios import router as portfolios_router
 from app.api.v1.risk import router as risk_router
 from app.api.v1.wealth import router as wealth_router
@@ -18,3 +19,4 @@ api_router.include_router(forecasting_router)
 api_router.include_router(intelligence_router)
 api_router.include_router(options_router)
 api_router.include_router(risk_router)
+api_router.include_router(pensions_router)

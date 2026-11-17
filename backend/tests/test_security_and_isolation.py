@@ -80,8 +80,19 @@ def test_production_security_validation_guard():
         ENVIRONMENT="production",
         SECRET_KEY="A_very_strong_random_production_secret_key_over_32_chars",
         POSTGRES_PASSWORD="prod_db_password_9921_strong",
+        BACKEND_CORS_ORIGINS=["https://app.example.com"],
     )
     secure.validate_production_security()
+
+    insecure_cors = Settings(
+        _env_file=None,
+        ENVIRONMENT="production",
+        SECRET_KEY="A_very_strong_random_production_secret_key_over_32_chars",
+        POSTGRES_PASSWORD="prod_db_password_9921_strong",
+        BACKEND_CORS_ORIGINS=["http://localhost:5173"],
+    )
+    with pytest.raises(RuntimeError, match="BACKEND_CORS_ORIGINS"):
+        insecure_cors.validate_production_security()
 
 
 def test_prompt_injection_text_sanitizer():
@@ -147,6 +158,68 @@ def test_security_headers_and_cross_tenant_isolation():
                 },
             )
             assert opt_resp.status_code == 404
+
+            # 4. Cross-tenant isolation across portfolios, wealth, and forecasting
+            assert client.get(f"/api/v1/portfolios/{foreign_portfolio_id}/holdings").status_code == 404
+            assert client.get(f"/api/v1/portfolios/{foreign_portfolio_id}/transactions").status_code == 404
+            assert client.get(f"/api/v1/portfolios/{foreign_portfolio_id}/performance").status_code == 404
+            assert client.get(f"/api/v1/portfolios/{foreign_portfolio_id}/dividends").status_code == 404
+
+            foreign_asset_id = uuid.uuid4()
+            assert client.patch(f"/api/v1/wealth/assets/{foreign_asset_id}", json={"name": "Hack"}).status_code == 404
+            assert client.delete(f"/api/v1/wealth/assets/{foreign_asset_id}").status_code == 404
+            assert client.delete(f"/api/v1/wealth/liabilities/{foreign_asset_id}").status_code == 404
+            assert client.delete(f"/api/v1/forecasting/goals/{foreign_asset_id}").status_code == 404
+            assert client.delete(f"/api/v1/options/positions/{foreign_asset_id}").status_code == 404
         finally:
             app.dependency_overrides.clear()
+
+
+def test_refresh_token_rotation_and_logout_revocation():
+    """Verify refresh tokens rotate JTIs and cannot be replayed after rotation or logout."""
+    user = User(
+        id=uuid.uuid4(),
+        email="rotator@example.com",
+        hashed_password="hashed",
+        full_name="Rotator",
+        default_currency="GHS",
+        is_active=True,
+        is_superuser=False,
+    )
+
+    class _UserLookupSession(_EmptyAsyncSession):
+        async def execute(self, stmt):
+            class _R:
+                def scalar_one_or_none(self_inner):
+                    return user
+            return _R()
+
+    async def _override_db():
+        yield _UserLookupSession()
+
+    refresh_tok = create_refresh_token(subject=user.id)
+    app.dependency_overrides[get_db] = _override_db
+    try:
+        with TestClient(app, raise_server_exceptions=False) as client:
+            # 1. First refresh succeeds and sets rotated HttpOnly cookie
+            r1 = client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_tok})
+            assert r1.status_code == 200
+            assert r1.json()["access_token"]
+            assert "refresh_token" in r1.cookies
+
+            # 2. Replaying the old refresh token fails (rotated JTI is revoked)
+            rotated_cookie = r1.cookies.get("refresh_token")
+            client.cookies.clear()
+            r2 = client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_tok})
+            assert r2.status_code == 401
+
+            # 3. Logout revokes the active cookie token
+            out = client.post("/api/v1/auth/logout", cookies={"refresh_token": rotated_cookie})
+            assert out.status_code == 204
+
+            client.cookies.clear()
+            r3 = client.post("/api/v1/auth/refresh", json={"refresh_token": rotated_cookie})
+            assert r3.status_code == 401
+    finally:
+        app.dependency_overrides.clear()
 

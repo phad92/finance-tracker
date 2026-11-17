@@ -10,6 +10,7 @@ import MarketsView from '@/views/MarketsView.vue'
 import IntelligenceView from '@/views/IntelligenceView.vue'
 import AssistantView from '@/views/AssistantView.vue'
 import OptionsRiskView from '@/views/OptionsRiskView.vue'
+import PensionsView from '@/views/PensionsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,6 +71,12 @@ const router = createRouter({
       path: '/options',
       name: 'options',
       component: OptionsRiskView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/pensions',
+      name: 'pensions',
+      component: PensionsView,
       meta: { requiresAuth: true },
     },
   ],

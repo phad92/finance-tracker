@@ -12,6 +12,17 @@ from app.models.intelligence import (
     ResearchReport,
 )
 from app.models.options import OptionPosition, OptionTransaction
+from app.models.pensions import (
+    PensionAccount,
+    PensionContribution,
+    PensionEmploymentPeriod,
+    PensionForecastAssumptions,
+    PensionScheme,
+    PensionTransaction,
+    PensionValuation,
+    SSNITBenefitEstimate,
+    SSNITMembership,
+)
 
 __all__ = [
     "Base",
@@ -40,5 +51,14 @@ __all__ = [
     "AIMessage",
     "OptionPosition",
     "OptionTransaction",
+    "PensionScheme",
+    "PensionAccount",
+    "PensionContribution",
+    "PensionValuation",
+    "PensionTransaction",
+    "PensionEmploymentPeriod",
+    "SSNITMembership",
+    "SSNITBenefitEstimate",
+    "PensionForecastAssumptions",
 ]
 

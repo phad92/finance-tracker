@@ -4,7 +4,7 @@ import TopNavbar from './TopNavbar.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-slate-100 flex">
+  <div class="min-h-screen bg-background text-foreground flex transition-colors duration-200">
     <Sidebar />
     <div class="flex-1 ml-64 flex flex-col min-w-0">
       <TopNavbar />

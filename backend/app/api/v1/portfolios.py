@@ -20,7 +20,7 @@ from app.schemas.portfolio import (
     PortfolioResponse,
     PortfolioUpdate,
 )
-from app.services.currency import convert_amount
+from app.services.currency import ExchangeRateUnavailableError, convert_amount
 from app.services.performance import calculate_portfolio_performance
 
 router = APIRouter(prefix="/portfolios", tags=["Portfolio Management"])
@@ -183,13 +183,19 @@ async def record_transaction(
         rate = tx_in.exchange_rate_to_reporting
         net_amount_reporting = round(net_amount * rate, 4)
     else:
-        net_amount_reporting, rate = await convert_amount(
-            db=db,
-            amount=net_amount,
-            from_currency=tx_in.currency,
-            to_currency=portfolio.reporting_currency,
-            rate_date=tx_in.trade_date,
-        )
+        try:
+            net_amount_reporting, rate = await convert_amount(
+                db=db,
+                amount=net_amount,
+                from_currency=tx_in.currency,
+                to_currency=portfolio.reporting_currency,
+                rate_date=tx_in.trade_date,
+            )
+        except ExchangeRateUnavailableError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"{exc} Supply exchange_rate_to_reporting explicitly or ingest FX rates.",
+            )
 
     # Fetch or initialize holding
     h_stmt = select(PortfolioHolding).where(
@@ -420,13 +426,19 @@ async def record_dividend(
         rate = div_in.exchange_rate_to_reporting
         net_reporting = round(net_amount * rate, 4)
     else:
-        net_reporting, rate = await convert_amount(
-            db=db,
-            amount=net_amount,
-            from_currency=div_in.currency,
-            to_currency=portfolio.reporting_currency,
-            rate_date=div_in.payable_date,
-        )
+        try:
+            net_reporting, rate = await convert_amount(
+                db=db,
+                amount=net_amount,
+                from_currency=div_in.currency,
+                to_currency=portfolio.reporting_currency,
+                rate_date=div_in.payable_date,
+            )
+        except ExchangeRateUnavailableError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"{exc} Supply exchange_rate_to_reporting explicitly or ingest FX rates.",
+            )
 
     new_div = Dividend(
         user_id=current_user.id,

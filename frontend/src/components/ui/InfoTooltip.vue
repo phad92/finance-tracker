@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
       :aria-label="label"
       :aria-expanded="isOpen"
       :aria-controls="tooltipId"
-      class="inline-flex items-center justify-center w-5 h-5 rounded-full text-slate-400 hover:text-blue-300 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
+      class="inline-flex items-center justify-center w-5 h-5 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
       @focus="handleFocusIn"
@@ -193,37 +193,37 @@ onBeforeUnmount(() => {
         top: `${panelCoords.top}px`,
         left: `${panelCoords.left}px`,
       }"
-      class="fixed z-50 w-72 max-w-[calc(100vw-24px)] rounded-xl border border-slate-700 bg-slate-950/95 backdrop-blur-sm p-3 text-left shadow-2xl shadow-black/60 text-xs text-slate-200 leading-relaxed"
+      class="fixed z-50 w-72 max-w-[calc(100vw-24px)] rounded-xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm p-3 text-left shadow-xl shadow-slate-900/10 dark:shadow-2xl dark:shadow-black/60 text-xs text-slate-700 dark:text-slate-200 leading-relaxed"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
       <span
         aria-hidden="true"
         :style="{ left: `${panelCoords.arrowLeft}px` }"
-        class="absolute -translate-x-1/2 w-2.5 h-2.5 rotate-45 bg-slate-950 border-slate-700"
+        class="absolute -translate-x-1/2 w-2.5 h-2.5 rotate-45 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700"
         :class="
           placement === 'top'
             ? '-bottom-[5px] border-r border-b'
             : '-top-[5px] border-l border-t'
         "
       />
-      <div v-if="title" class="font-semibold text-white mb-1">{{ title }}</div>
-      <p class="text-slate-300">{{ content }}</p>
+      <div v-if="title" class="font-semibold text-slate-900 dark:text-white mb-1">{{ title }}</div>
+      <p class="text-slate-600 dark:text-slate-300">{{ content }}</p>
       <div
         v-if="meta || sourceUrl || sourceName"
-        class="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between gap-2 text-[11px] text-slate-400"
+        class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400"
       >
-        <span v-if="meta" class="font-mono text-slate-400">{{ meta }}</span>
+        <span v-if="meta" class="font-mono text-slate-500 dark:text-slate-400">{{ meta }}</span>
         <a
           v-if="sourceUrl"
           :href="sourceUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-blue-400 hover:text-blue-300 underline underline-offset-2 truncate ml-auto"
+          class="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 underline underline-offset-2 truncate ml-auto"
         >
           {{ sourceName || 'Official source' }}
         </a>
-        <span v-else-if="sourceName" class="text-slate-400 truncate ml-auto">{{ sourceName }}</span>
+        <span v-else-if="sourceName" class="text-slate-500 dark:text-slate-400 truncate ml-auto">{{ sourceName }}</span>
       </div>
     </div>
   </span>

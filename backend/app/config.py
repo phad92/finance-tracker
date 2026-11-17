@@ -42,6 +42,13 @@ class Settings(BaseSettings):
                 raise RuntimeError(
                     "Production startup blocked: POSTGRES_PASSWORD must not use the default development secret."
                 )
+            if not self.BACKEND_CORS_ORIGINS or any(
+                origin.strip() == "*" or "localhost" in origin.lower() or "127.0.0.1" in origin
+                for origin in self.BACKEND_CORS_ORIGINS
+            ):
+                raise RuntimeError(
+                    "Production startup blocked: BACKEND_CORS_ORIGINS must not contain '*' or localhost origins."
+                )
 
     # Default Reporting Currency
     DEFAULT_REPORTING_CURRENCY: str = "GHS"

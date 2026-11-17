@@ -20,7 +20,7 @@ from app.schemas.wealth import (
     LiabilityUpdate,
     NetWorthSummary,
 )
-from app.services.currency import convert_amount
+from app.services.currency import ExchangeRateUnavailableError, convert_amount
 from app.services.wealth import calculate_net_worth
 
 router = APIRouter(prefix="/wealth", tags=["Wealth & Asset Management"])
@@ -32,11 +32,17 @@ async def get_net_worth_summary(
     db: AsyncSession = Depends(get_db),
 ) -> NetWorthSummary:
     """Calculate and return consolidated net worth, category allocation, and currency exposure."""
-    return await calculate_net_worth(
-        db=db,
-        user_id=current_user.id,
-        reporting_currency=current_user.default_currency,
-    )
+    try:
+        return await calculate_net_worth(
+            db=db,
+            user_id=current_user.id,
+            reporting_currency=current_user.default_currency,
+        )
+    except ExchangeRateUnavailableError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
 
 
 @router.get("/categories", response_model=List[AssetCategoryResponse])

@@ -8,9 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#090d16',
-        card: '#0f172a',
-        border: '#1e293b',
+        background: 'rgb(var(--background) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
+        card: {
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)',
+          foreground: 'rgb(var(--card-foreground) / <alpha-value>)',
+        },
+        border: 'rgb(var(--border) / <alpha-value>)',
+        muted: {
+          DEFAULT: 'rgb(var(--muted) / <alpha-value>)',
+          foreground: 'rgb(var(--muted-foreground) / <alpha-value>)',
+        },
+        sidebar: {
+          DEFAULT: 'rgb(var(--sidebar) / <alpha-value>)',
+          border: 'rgb(var(--sidebar-border) / <alpha-value>)',
+        },
         primary: {
           DEFAULT: '#3b82f6',
           foreground: '#ffffff',
@@ -22,4 +34,3 @@ export default {
   },
   plugins: [],
 }
-

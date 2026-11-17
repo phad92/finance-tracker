@@ -67,11 +67,11 @@ async function sendMessage(text?: string) {
       <!-- Header -->
       <div class="mb-4 flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-            <Sparkles class="w-5 h-5 text-blue-400" />
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <Sparkles class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <span>AI Financial Assistant</span>
           </h1>
-          <p class="text-xs text-slate-400">
+          <p class="text-xs text-slate-500 dark:text-slate-400">
             Strictly scoped to your authenticated portfolio and wealth ledger via authorized backend tools
           </p>
         </div>
@@ -83,14 +83,14 @@ async function sendMessage(text?: string) {
           v-for="qp in quickPrompts"
           :key="qp"
           @click="sendMessage(qp)"
-          class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-colors"
+          class="text-xs bg-card hover:bg-muted border border-border text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full transition-colors"
         >
           {{ qp }}
         </button>
       </div>
 
       <!-- Chat Thread -->
-      <div class="flex-1 bg-card border border-border rounded-xl p-6 overflow-y-auto space-y-4">
+      <div class="flex-1 bg-card border border-border rounded-xl p-6 overflow-y-auto space-y-4 shadow-sm">
         <div
           v-for="(msg, idx) in messages"
           :key="idx"
@@ -99,9 +99,9 @@ async function sendMessage(text?: string) {
         >
           <div
             v-if="msg.role === 'assistant'"
-            class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shrink-0 mt-1"
+            class="w-8 h-8 rounded-lg bg-blue-600/15 dark:bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shrink-0 mt-1"
           >
-            <Bot class="w-4 h-4 text-blue-400" />
+            <Bot class="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
 
           <div
@@ -109,22 +109,22 @@ async function sendMessage(text?: string) {
             :class="
               msg.role === 'user'
                 ? 'bg-blue-600 text-white'
-                : 'bg-slate-900/90 border border-slate-800 text-slate-200'
+                : 'bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200'
             "
           >
             <div>{{ msg.content }}</div>
 
             <div
               v-if="msg.tools_invoked && msg.tools_invoked.length > 0"
-              class="mt-3 pt-2 border-t border-slate-800 flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-400"
+              class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-500 dark:text-slate-400"
             >
-              <span class="flex items-center gap-1 text-emerald-400">
+              <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                 <Wrench class="w-3 h-3" /> Tools:
               </span>
               <span
                 v-for="t in msg.tools_invoked"
                 :key="t"
-                class="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700"
+                class="bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700"
               >
                 {{ t }}
               </span>
@@ -134,14 +134,14 @@ async function sendMessage(text?: string) {
 
           <div
             v-if="msg.role === 'user'"
-            class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 mt-1"
+            class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 mt-1"
           >
-            <User class="w-4 h-4 text-slate-300" />
+            <User class="w-4 h-4 text-slate-600 dark:text-slate-300" />
           </div>
         </div>
 
-        <div v-if="sending" class="flex items-center gap-2 text-xs text-slate-400 font-mono pl-11">
-          <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+        <div v-if="sending" class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono pl-11">
+          <span class="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400 animate-ping"></span>
           <span>Querying authorized wealth tools...</span>
         </div>
       </div>
@@ -152,7 +152,7 @@ async function sendMessage(text?: string) {
           v-model="inputPrompt"
           type="text"
           placeholder="Ask about your net worth, portfolio returns, currency risk, or macro outlook..."
-          class="flex-1 bg-card border border-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500"
+          class="flex-1 bg-card border border-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
         />
         <button
           type="submit"

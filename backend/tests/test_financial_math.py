@@ -10,6 +10,11 @@ from app.schemas.forecasting import (
     ProjectionRequest,
 )
 from app.schemas.options import OptionAnalyzeRequest, OptionLegInput, StrategyPayoffRequest
+from app.services.currency import (
+    ExchangeRateUnavailableError,
+    get_exchange_rate,
+    get_exchange_rate_quote,
+)
 from app.services.forecasting import (
     calculate_monte_carlo_simulation,
     calculate_required_monthly_savings,
@@ -17,7 +22,7 @@ from app.services.forecasting import (
 )
 from app.services.macro import build_indicator_response
 from app.services.options_engine import calculate_option_analytics, compute_strategy_payoff
-from app.services.performance import calculate_xirr
+from app.services.performance import calculate_twr_from_subperiods, calculate_xirr
 from app.services.risk import calculate_portfolio_risk
 
 
@@ -262,5 +267,96 @@ def test_macro_indicator_provenance_and_explainers():
     assert seed_resp.source_url == "https://www.bog.gov.gh/treasury-and-the-markets/treasury-bill-rates/"
     assert seed_resp.update_cadence == "Weekly tender"
     assert "91-day Government of Ghana" in (seed_resp.explainer or "")
+
+
+def test_twr_cash_flow_timing_invariance_and_zero_return_on_deposits():
+    """Verify TWR neutralizes external deposit timing/size and deposits alone create 0% return."""
+    # Scenario A: +20% in period 1, then small +1200 deposit, then +10% in period 2 -> (1.2 * 1.1 - 1) = 32.0%
+    events_small_deposit = [
+        (date(2026, 1, 1), 0.0, 1000.0),
+        (date(2026, 7, 1), 1200.0, 1200.0),
+    ]
+    twr_small = calculate_twr_from_subperiods(events_small_deposit, terminal_value=2640.0)
+    assert twr_small == pytest.approx(32.0, abs=0.01)
+
+    # Scenario B: Identical +20% then +10% asset return, but huge +12000 deposit on Jul 1 -> still 32.0%
+    events_large_deposit = [
+        (date(2026, 1, 1), 0.0, 1000.0),
+        (date(2026, 7, 1), 1200.0, 12000.0),
+    ]
+    twr_large = calculate_twr_from_subperiods(events_large_deposit, terminal_value=14520.0)
+    assert twr_large == pytest.approx(32.0, abs=0.01)
+
+    # Scenario C: Flat asset prices across deposits -> 0.0% TWR
+    events_flat = [
+        (date(2026, 1, 1), 0.0, 1000.0),
+        (date(2026, 7, 1), 1000.0, 5000.0),
+    ]
+    assert calculate_twr_from_subperiods(events_flat, terminal_value=6000.0) == pytest.approx(0.0, abs=0.01)
+
+
+@pytest.mark.asyncio
+async def test_fx_quote_no_silent_fallback_and_staleness():
+    """Verify missing FX pairs never return 1.0 or hardcoded rates, and stale rates are flagged."""
+    # Case 1: Missing pair -> UNAVAILABLE quote and ExchangeRateUnavailableError
+    quote_missing = await get_exchange_rate_quote(_FakeAsyncSession(None), "USD", "GHS", date(2026, 11, 17))
+    assert quote_missing.quality_status == "UNAVAILABLE"
+    assert quote_missing.rate is None
+
+    with pytest.raises(ExchangeRateUnavailableError):
+        await get_exchange_rate(_FakeAsyncSession(None), "USD", "GHS", date(2026, 11, 17))
+
+    # Case 2: Stale stored rate (>7 days old) -> flagged STALE
+    stale_row = SimpleNamespace(
+        from_currency="USD",
+        to_currency="GHS",
+        rate=15.20,
+        rate_date=date(2026, 10, 1),
+        source="MANUAL",
+    )
+    quote_manual_old = await get_exchange_rate_quote(_FakeAsyncSession(stale_row), "USD", "GHS", date(2026, 11, 17))
+    assert quote_manual_old.is_stale is True
+    assert quote_manual_old.quality_status == "MANUAL"
+    assert quote_manual_old.rate == pytest.approx(15.20, abs=1e-6)
+
+    stale_provider_row = SimpleNamespace(
+        from_currency="USD",
+        to_currency="EUR",
+        rate=0.92,
+        rate_date=date(2026, 10, 1),
+        source="Frankfurter",
+    )
+    quote_stale = await get_exchange_rate_quote(_FakeAsyncSession(stale_provider_row), "USD", "EUR", date(2026, 11, 17))
+    assert quote_stale.is_stale is True
+    assert quote_stale.quality_status == "STALE"
+
+
+def test_xirr_edge_cases_consolidation_leap_year_and_partial_loss():
+    """Verify XIRR consolidates same-day flows, handles leap years, and handles negative returns."""
+    # Same-day consolidation: -500 + -500 on Jan 1, +1100 one year later -> ~10%
+    irr_same_day = calculate_xirr([
+        (date(2025, 1, 1), -500.0),
+        (date(2025, 1, 1), -500.0),
+        (date(2026, 1, 1), 1100.0),
+    ])
+    assert irr_same_day == pytest.approx(10.0, abs=0.1)
+
+    # Leap year + multiple deposits/withdrawals
+    irr_multi = calculate_xirr([
+        (date(2024, 2, 29), -1000.0),
+        (date(2024, 8, 30), -1000.0),
+        (date(2025, 2, 28), 2200.0),
+    ])
+    assert irr_multi is not None
+    assert irr_multi > 10.0
+
+    # Partial loss with zero terminal value (only mid-way partial recovery)
+    irr_loss = calculate_xirr([
+        (date(2025, 1, 1), -1000.0),
+        (date(2026, 1, 1), 500.0),
+    ])
+    assert irr_loss == pytest.approx(-50.0, abs=0.2)
+
+
 
 

@@ -74,50 +74,83 @@ async def seed_market_master_data(db: AsyncSession) -> None:
 
 async def sync_daily_fx_rates(db: AsyncSession) -> List[Dict]:
     """
-    Fetch the latest daily FX reference rates for GHS pairs from Frankfurter or open APIs.
-    Falls back gracefully to official Bank of Ghana benchmark rates if offline.
+    Fetch the latest daily FX reference rates from Frankfurter (ECB reference) for USD/EUR/GBP.
+    GHS cross-rates are only calculated if an observed or manually approved USD/GHS anchor
+    already exists in the database, and are explicitly labeled CALCULATED_CROSS_RATE.
+    Never writes hardcoded fallback rates under official provenance labels.
     """
     today = date.today()
-    rates_to_store = []
+    rates_to_store: List[Tuple[str, str, float, str]] = []
 
-    # Attempt fetch from open API
+    eur_usd: Optional[float] = None
+    gbp_usd: Optional[float] = None
+
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get("https://api.frankfurter.app/latest?from=USD&to=EUR,GBP")
             if resp.status_code == 200:
                 data = resp.json()
-                eur_usd = float(data["rates"].get("EUR", 0.92))
-                gbp_usd = float(data["rates"].get("GBP", 0.78))
-                # Baseline GHS rate (1 USD = 15.60 GHS approx market anchor)
-                usd_ghs = 15.65
-                rates_to_store.extend([
-                    ("USD", "GHS", usd_ghs, "Frankfurter+BoG"),
-                    ("GHS", "USD", 1.0 / usd_ghs, "Frankfurter+BoG"),
-                    ("EUR", "GHS", usd_ghs / eur_usd, "Frankfurter+BoG"),
-                    ("GBP", "GHS", usd_ghs / gbp_usd, "Frankfurter+BoG"),
-                ])
+                raw_rates = data.get("rates", {})
+                if "EUR" in raw_rates and float(raw_rates["EUR"]) > 0:
+                    eur_usd = float(raw_rates["EUR"])
+                    rates_to_store.extend([
+                        ("USD", "EUR", eur_usd, "Frankfurter"),
+                        ("EUR", "USD", 1.0 / eur_usd, "Frankfurter"),
+                    ])
+                if "GBP" in raw_rates and float(raw_rates["GBP"]) > 0:
+                    gbp_usd = float(raw_rates["GBP"])
+                    rates_to_store.extend([
+                        ("USD", "GBP", gbp_usd, "Frankfurter"),
+                        ("GBP", "USD", 1.0 / gbp_usd, "Frankfurter"),
+                    ])
+                if eur_usd and gbp_usd:
+                    rates_to_store.extend([
+                        ("EUR", "GBP", gbp_usd / eur_usd, "CALCULATED_CROSS_RATE:Frankfurter"),
+                        ("GBP", "EUR", eur_usd / gbp_usd, "CALCULATED_CROSS_RATE:Frankfurter"),
+                    ])
     except Exception:
-        # Fallback to standard reference benchmarks
-        usd_ghs = 15.65
-        rates_to_store.extend([
-            ("USD", "GHS", usd_ghs, "BoG_Reference"),
-            ("GHS", "USD", 1.0 / usd_ghs, "BoG_Reference"),
-            ("EUR", "GHS", 16.90, "BoG_Reference"),
-            ("GBP", "GHS", 20.10, "BoG_Reference"),
-        ])
+        # Network/provider failure: return empty or existing cross-rates only, never fabricate official rates.
+        pass
+
+    # Derive EUR/GHS and GBP/GHS cross-rates only if a stored USD/GHS rate exists in DB
+    usd_ghs_stmt = (
+        select(ExchangeRate)
+        .where(
+            ExchangeRate.from_currency == "USD",
+            ExchangeRate.to_currency == "GHS",
+            ExchangeRate.rate_date <= today,
+            ExchangeRate.source.notin_(["Frankfurter+BoG", "BoG_Reference"]),
+        )
+        .order_by(desc(ExchangeRate.rate_date))
+        .limit(1)
+    )
+    usd_ghs_row = (await db.execute(usd_ghs_stmt)).scalar_one_or_none()
+    if usd_ghs_row is not None and float(usd_ghs_row.rate) > 0:
+        usd_ghs = float(usd_ghs_row.rate)
+        if eur_usd:
+            eur_ghs = usd_ghs / eur_usd
+            rates_to_store.extend([
+                ("EUR", "GHS", eur_ghs, f"CALCULATED_CROSS_RATE:Frankfurter+{usd_ghs_row.source}"),
+                ("GHS", "EUR", 1.0 / eur_ghs, f"CALCULATED_CROSS_RATE:Frankfurter+{usd_ghs_row.source}"),
+            ])
+        if gbp_usd:
+            gbp_ghs = usd_ghs / gbp_usd
+            rates_to_store.extend([
+                ("GBP", "GHS", gbp_ghs, f"CALCULATED_CROSS_RATE:Frankfurter+{usd_ghs_row.source}"),
+                ("GHS", "GBP", 1.0 / gbp_ghs, f"CALCULATED_CROSS_RATE:Frankfurter+{usd_ghs_row.source}"),
+            ])
 
     result_records = []
     for from_curr, to_curr, rate_val, src in rates_to_store:
-        # Upsert or update
         stmt = select(ExchangeRate).where(
             ExchangeRate.from_currency == from_curr,
             ExchangeRate.to_currency == to_curr,
             ExchangeRate.rate_date == today,
+            ExchangeRate.source == src,
         )
         existing = (await db.execute(stmt)).scalar_one_or_none()
         if existing:
             existing.rate = rate_val
-            existing.source = src
         else:
             new_rate = ExchangeRate(
                 from_currency=from_curr,
@@ -127,9 +160,15 @@ async def sync_daily_fx_rates(db: AsyncSession) -> List[Dict]:
                 source=src,
             )
             db.add(new_rate)
-        result_records.append({"pair": f"{from_curr}/{to_curr}", "rate": round(rate_val, 4), "date": str(today)})
+        result_records.append({
+            "pair": f"{from_curr}/{to_curr}",
+            "rate": round(rate_val, 6),
+            "date": str(today),
+            "source": src,
+        })
 
-    await db.commit()
+    if rates_to_store:
+        await db.commit()
     return result_records
 
 

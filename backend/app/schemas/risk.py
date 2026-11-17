@@ -1,5 +1,5 @@
 import uuid
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 
 
@@ -34,4 +34,5 @@ class PortfolioRiskResponse(BaseModel):
     stress_tests: List[StressTestScenario]
     data_completeness_note: str
     estimation_status: str  # OBSERVED_HISTORY or PARAMETRIC_ESTIMATE
-
+    methodology_note: Optional[str] = None
+    assumptions_used: Optional[Dict[str, Any]] = None

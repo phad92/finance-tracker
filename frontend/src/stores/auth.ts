@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import api from '@/services/api'
+import api, { getInMemoryAccessToken, setInMemoryAccessToken } from '@/services/api'
 
 export interface User {
   id: string
@@ -14,7 +14,7 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
-  const token = ref<string | null>(localStorage.getItem('access_token'))
+  const token = ref<string | null>(getInMemoryAccessToken())
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -28,8 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       })
       token.value = res.data.access_token
-      localStorage.setItem('access_token', res.data.access_token)
-      localStorage.setItem('refresh_token', res.data.refresh_token)
+      setInMemoryAccessToken(res.data.access_token)
       await fetchMe()
       return true
     } catch (err: any) {
@@ -45,7 +44,6 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       await api.post('/auth/register', payload)
-      // Auto login after registration
       const params = new URLSearchParams()
       params.append('username', payload.email)
       params.append('password', payload.password)
@@ -59,20 +57,36 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchMe() {
+    if (!token.value) {
+      // Attempt silent session restoration via HttpOnly refresh cookie
+      try {
+        const refreshRes = await api.post('/auth/refresh')
+        if (refreshRes.data?.access_token) {
+          token.value = refreshRes.data.access_token
+          setInMemoryAccessToken(refreshRes.data.access_token)
+        }
+      } catch {
+        return
+      }
+    }
     if (!token.value) return
     try {
       const res = await api.get<User>('/auth/me')
       user.value = res.data
     } catch {
-      logout()
+      await logout()
     }
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await api.post('/auth/logout')
+    } catch {
+      // Clear local session state even if network request fails
+    }
     user.value = null
     token.value = null
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+    setInMemoryAccessToken(null)
     window.location.href = '/login'
   }
 
@@ -88,4 +102,3 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
   }
 })
-

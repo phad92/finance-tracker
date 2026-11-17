@@ -13,6 +13,7 @@ from app.models.markets import Currency
 from app.models.wealth import AssetCategory
 from app.services.macro import seed_macro_indicators
 from app.services.market_data import seed_market_master_data
+from app.services.pensions import seed_default_pension_schemes
 
 
 @asynccontextmanager
@@ -58,6 +59,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         await session.commit()
         await seed_market_master_data(session)
         await seed_macro_indicators(session)
+        await seed_default_pension_schemes(session)
 
     yield
 

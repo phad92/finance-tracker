@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.wealth import Asset, AssetCategory, Liability
 from app.schemas.wealth import NetWorthSummary
 from app.services.currency import convert_amount
+from app.services.pensions import get_funded_pension_total
 
 
 async def calculate_net_worth(
@@ -57,6 +58,13 @@ async def calculate_net_worth(
         cat_name = asset.category.name if asset.category else "Uncategorized"
         assets_by_category[cat_name] += val_in_reporting
         currency_exposure[val_currency] += val_in_reporting
+
+    # 1b. Roll up funded Tier 2 / Tier 3 pension balances (SSNIT Tier 1 excluded)
+    funded_pension_val = await get_funded_pension_total(db, user_id, reporting_currency)
+    if funded_pension_val > 0:
+        total_assets += funded_pension_val
+        assets_by_category["Retirement & Pensions (Tier 2/3)"] += funded_pension_val
+        currency_exposure[reporting_currency] += funded_pension_val
 
     # 2. Fetch user's active liabilities
     liab_stmt = select(Liability).where(

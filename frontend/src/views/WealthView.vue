@@ -86,8 +86,8 @@ async function handleCreateLiability() {
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Wealth & Balance Sheet</h1>
-          <p class="text-sm text-slate-400">Track and value all physical, bank, mobile money, and alternative assets</p>
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Wealth & Balance Sheet</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Track and value all physical, bank, mobile money, and alternative assets</p>
         </div>
         <div>
           <button
@@ -114,7 +114,7 @@ async function handleCreateLiability() {
         <button
           @click="activeTab = 'assets'"
           class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          :class="activeTab === 'assets' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'text-slate-400 hover:text-white'"
+          :class="activeTab === 'assets' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           <Wallet class="w-4 h-4" />
           <span>Assets ({{ wealthStore.assets.length }})</span>
@@ -122,7 +122,7 @@ async function handleCreateLiability() {
         <button
           @click="activeTab = 'liabilities'"
           class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          :class="activeTab === 'liabilities' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 font-semibold' : 'text-slate-400 hover:text-white'"
+          :class="activeTab === 'liabilities' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           <CreditCard class="w-4 h-4" />
           <span>Liabilities ({{ wealthStore.liabilities.length }})</span>
@@ -131,8 +131,8 @@ async function handleCreateLiability() {
 
       <!-- Assets Table -->
       <div v-if="activeTab === 'assets'" class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-border">
+        <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+          <thead class="bg-slate-100/90 dark:bg-slate-900/60 text-xs uppercase font-bold text-slate-700 dark:text-slate-400 border-b border-border">
             <tr>
               <th class="px-6 py-4">Asset Name</th>
               <th class="px-6 py-4">Category</th>
@@ -142,25 +142,25 @@ async function handleCreateLiability() {
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="asset in wealthStore.assets" :key="asset.id" class="hover:bg-slate-800/30 transition-colors">
-              <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-400 flex items-center justify-center font-bold text-xs">
+            <tr v-for="asset in wealthStore.assets" :key="asset.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
                   {{ asset.name.charAt(0).toUpperCase() }}
                 </div>
                 <span>{{ asset.name }}</span>
               </td>
-              <td class="px-6 py-4 text-xs font-mono text-slate-300">
+              <td class="px-6 py-4 text-xs font-mono text-slate-600 dark:text-slate-300">
                 {{ asset.category_name || 'General' }}
               </td>
-              <td class="px-6 py-4 text-xs text-slate-400">
+              <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
                 {{ asset.institution || '—' }}
               </td>
               <td class="px-6 py-4 text-xs font-mono">
-                <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-blue-400">
+                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400">
                   {{ asset.currency }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-right font-mono font-bold text-white">
+              <td class="px-6 py-4 text-right font-mono font-bold text-slate-900 dark:text-white">
                 {{ asset.latest_valuation ? formatCurrency(asset.latest_valuation.value_original_currency, asset.currency) : '—' }}
               </td>
             </tr>
@@ -175,8 +175,8 @@ async function handleCreateLiability() {
 
       <!-- Liabilities Table -->
       <div v-else class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-border">
+        <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+          <thead class="bg-slate-100/90 dark:bg-slate-900/60 text-xs uppercase font-bold text-slate-700 dark:text-slate-400 border-b border-border">
             <tr>
               <th class="px-6 py-4">Liability</th>
               <th class="px-6 py-4">Type</th>
@@ -186,20 +186,20 @@ async function handleCreateLiability() {
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="liab in wealthStore.liabilities" :key="liab.id" class="hover:bg-slate-800/30 transition-colors">
-              <td class="px-6 py-4 font-medium text-white">
+            <tr v-for="liab in wealthStore.liabilities" :key="liab.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">
                 {{ liab.name }}
               </td>
-              <td class="px-6 py-4 text-xs font-mono text-slate-400">
+              <td class="px-6 py-4 text-xs font-mono text-slate-500 dark:text-slate-400">
                 {{ liab.category }}
               </td>
-              <td class="px-6 py-4 text-xs text-slate-400">
+              <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
                 {{ liab.institution || '—' }}
               </td>
-              <td class="px-6 py-4 text-right font-mono font-bold text-rose-400">
+              <td class="px-6 py-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400">
                 {{ formatCurrency(liab.current_balance, liab.currency) }}
               </td>
-              <td class="px-6 py-4 text-right font-mono text-xs text-slate-400">
+              <td class="px-6 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
                 {{ formatCurrency(liab.original_balance, liab.currency) }}
               </td>
             </tr>
@@ -213,30 +213,30 @@ async function handleCreateLiability() {
       </div>
 
       <!-- Add Asset Modal -->
-      <div v-if="showAddAssetModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div v-if="showAddAssetModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-card border border-border rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-border pb-3">
-            <h3 class="font-bold text-white text-base">Record New Asset</h3>
-            <button @click="showAddAssetModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Record New Asset</h3>
+            <button @click="showAddAssetModal = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
           </div>
 
           <form @submit.prevent="handleCreateAsset" class="space-y-4">
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Asset Name</label>
-              <input v-model="assetName" required placeholder="e.g. Stanbic Savings, MTN MoMo, Cantonments Land" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Asset Name</label>
+              <input v-model="assetName" required placeholder="e.g. Stanbic Savings, MTN MoMo, Cantonments Land" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500" />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Category</label>
-                <select v-model="assetCategory" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                <select v-model="assetCategory" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500">
                   <option disabled value="">Select category</option>
                   <option v-for="cat in wealthStore.categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Currency</label>
-                <select v-model="assetCurrency" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Currency</label>
+                <select v-model="assetCurrency" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500">
                   <option value="GHS">GHS</option>
                   <option value="USD">USD</option>
                   <option value="GBP">GBP</option>
@@ -247,17 +247,17 @@ async function handleCreateLiability() {
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Institution / Bank</label>
-                <input v-model="assetInstitution" placeholder="e.g. Stanbic Bank, MTN" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Institution / Bank</label>
+                <input v-model="assetInstitution" placeholder="e.g. Stanbic Bank, MTN" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Initial Valuation Amount</label>
-                <input v-model.number="assetInitialValue" type="number" step="0.01" min="0" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Initial Valuation Amount</label>
+                <input v-model.number="assetInitialValue" type="number" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500" />
               </div>
             </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t border-border">
-              <button @click="showAddAssetModal = false" type="button" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancel</button>
+              <button @click="showAddAssetModal = false" type="button" class="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
               <button type="submit" :disabled="wealthStore.loading" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow-md shadow-blue-600/20">Save Asset</button>
             </div>
           </form>
@@ -265,23 +265,23 @@ async function handleCreateLiability() {
       </div>
 
       <!-- Add Liability Modal -->
-      <div v-if="showAddLiabilityModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div v-if="showAddLiabilityModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-card border border-border rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-border pb-3">
-            <h3 class="font-bold text-white text-base">Record Liability / Debt</h3>
-            <button @click="showAddLiabilityModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Record Liability / Debt</h3>
+            <button @click="showAddLiabilityModal = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
           </div>
 
           <form @submit.prevent="handleCreateLiability" class="space-y-4">
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Liability Description</label>
-              <input v-model="liabName" required placeholder="e.g. Standard Chartered Auto Loan, Home Mortgage" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Liability Description</label>
+              <input v-model="liabName" required placeholder="e.g. Standard Chartered Auto Loan, Home Mortgage" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-rose-500" />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Category</label>
-                <select v-model="liabCategory" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                <select v-model="liabCategory" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-rose-500">
                   <option value="MORTGAGE">Mortgage</option>
                   <option value="PERSONAL_LOAN">Personal Loan</option>
                   <option value="CREDIT_CARD">Credit Card</option>
@@ -289,8 +289,8 @@ async function handleCreateLiability() {
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Currency</label>
-                <select v-model="liabCurrency" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Currency</label>
+                <select v-model="liabCurrency" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-rose-500">
                   <option value="GHS">GHS</option>
                   <option value="USD">USD</option>
                   <option value="GBP">GBP</option>
@@ -301,17 +301,17 @@ async function handleCreateLiability() {
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Current Balance Due</label>
-                <input v-model.number="liabCurrentBalance" type="number" step="0.01" min="0" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Current Balance Due</label>
+                <input v-model.number="liabCurrentBalance" type="number" step="0.01" min="0" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-rose-500" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Original Loan Amount</label>
-                <input v-model.number="liabOriginalBalance" type="number" step="0.01" min="0" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Original Loan Amount</label>
+                <input v-model.number="liabOriginalBalance" type="number" step="0.01" min="0" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-rose-500" />
               </div>
             </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t border-border">
-              <button @click="showAddLiabilityModal = false" type="button" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancel</button>
+              <button @click="showAddLiabilityModal = false" type="button" class="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
               <button type="submit" :disabled="wealthStore.loading" class="bg-rose-600 hover:bg-rose-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow-md shadow-rose-600/20">Save Liability</button>
             </div>
           </form>

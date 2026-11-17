@@ -166,14 +166,14 @@ async function handleRecordDividend() {
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Investment Portfolios</h1>
-          <p class="text-sm text-slate-400">Equity holdings, XIRR return analytics, FIFO tax-lots, and dividend tracking</p>
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Investment Portfolios</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Equity holdings, XIRR return analytics, FIFO tax-lots, and dividend tracking</p>
         </div>
         <div class="flex items-center gap-2">
           <button
             v-if="selectedPortfolioId"
             @click="showDividendModal = true"
-            class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-medium px-3 py-2 rounded-lg border border-slate-700 transition-colors"
+            class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-emerald-600 dark:text-emerald-400 text-xs font-medium px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors"
           >
             <Coins class="w-4 h-4" />
             <span>Log Dividend</span>
@@ -203,7 +203,7 @@ async function handleRecordDividend() {
           :key="p.id"
           @click="handleSelectPortfolio(p.id)"
           class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-          :class="selectedPortfolioId === p.id ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'"
+          :class="selectedPortfolioId === p.id ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800'"
         >
           <PieChart class="w-4 h-4" />
           <span>{{ p.name }}</span>
@@ -213,47 +213,47 @@ async function handleRecordDividend() {
 
       <!-- Institutional Performance KPI Bar -->
       <div v-if="performance" class="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div class="bg-card border border-border rounded-xl p-4">
-          <span class="text-xs text-slate-400 uppercase font-semibold">Market Value</span>
-          <p class="text-xl font-bold font-mono text-white mt-1">
+        <div class="bg-card border border-border rounded-xl p-4 shadow-sm">
+          <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Market Value</span>
+          <p class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">
             {{ formatCurrency(performance.total_market_value, performance.reporting_currency) }}
           </p>
         </div>
 
-        <div class="bg-card border border-border rounded-xl p-4">
-          <span class="text-xs text-slate-400 uppercase font-semibold">Cost Basis</span>
-          <p class="text-xl font-bold font-mono text-slate-300 mt-1">
+        <div class="bg-card border border-border rounded-xl p-4 shadow-sm">
+          <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Cost Basis</span>
+          <p class="text-xl font-bold font-mono text-slate-700 dark:text-slate-300 mt-1">
             {{ formatCurrency(performance.total_cost_basis, performance.reporting_currency) }}
           </p>
         </div>
 
-        <div class="bg-card border border-border rounded-xl p-4">
-          <span class="text-xs text-slate-400 uppercase font-semibold">Total Return</span>
+        <div class="bg-card border border-border rounded-xl p-4 shadow-sm">
+          <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Total Return</span>
           <div class="flex items-center gap-1.5 mt-1">
-            <span class="text-xl font-bold font-mono" :class="performance.total_return_amount >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+            <span class="text-xl font-bold font-mono" :class="performance.total_return_amount >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
               {{ formatCurrency(performance.total_return_amount, performance.reporting_currency) }}
             </span>
           </div>
-          <span class="text-[10px] font-mono" :class="performance.total_return_pct >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+          <span class="text-[10px] font-mono" :class="performance.total_return_pct >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
             {{ performance.total_return_pct >= 0 ? '+' : '' }}{{ performance.total_return_pct }}%
           </span>
         </div>
 
-        <div class="bg-card border border-border rounded-xl p-4">
-          <span class="text-xs text-slate-400 uppercase font-semibold flex items-center gap-1">
-            <TrendingUp class="w-3.5 h-3.5 text-blue-400" /> XIRR (Annualized)
+        <div class="bg-card border border-border rounded-xl p-4 shadow-sm">
+          <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold flex items-center gap-1">
+            <TrendingUp class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> XIRR (Annualized)
           </span>
-          <p class="text-xl font-bold font-mono text-blue-400 mt-1">
+          <p class="text-xl font-bold font-mono text-blue-600 dark:text-blue-400 mt-1">
             {{ performance.xirr_annualized_pct !== null ? `${performance.xirr_annualized_pct}%` : '—' }}
           </p>
           <span class="text-[10px] text-slate-500 font-mono">Money-weighted</span>
         </div>
 
-        <div class="bg-card border border-border rounded-xl p-4">
-          <span class="text-xs text-slate-400 uppercase font-semibold flex items-center gap-1">
-            <Coins class="w-3.5 h-3.5 text-amber-400" /> Net Dividends
+        <div class="bg-card border border-border rounded-xl p-4 shadow-sm">
+          <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold flex items-center gap-1">
+            <Coins class="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" /> Net Dividends
           </span>
-          <p class="text-xl font-bold font-mono text-amber-400 mt-1">
+          <p class="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
             {{ formatCurrency(performance.total_dividends_net, performance.reporting_currency) }}
           </p>
           <span class="text-[10px] text-slate-500 font-mono">After WHT</span>
@@ -265,14 +265,14 @@ async function handleRecordDividend() {
         <button
           @click="activeSubTab = 'holdings'"
           class="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-          :class="activeSubTab === 'holdings' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'"
+          :class="activeSubTab === 'holdings' ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           Holdings ({{ portfolioStore.holdings.length }})
         </button>
         <button
           @click="activeSubTab = 'transactions'"
           class="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-          :class="activeSubTab === 'transactions' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'"
+          :class="activeSubTab === 'transactions' ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           <History class="w-3.5 h-3.5" />
           <span>Trade Ledger ({{ transactions.length }})</span>
@@ -280,7 +280,7 @@ async function handleRecordDividend() {
         <button
           @click="activeSubTab = 'dividends'"
           class="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-          :class="activeSubTab === 'dividends' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'"
+          :class="activeSubTab === 'dividends' ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           <DollarSign class="w-3.5 h-3.5" />
           <span>Dividends ({{ dividends.length }})</span>
@@ -289,8 +289,8 @@ async function handleRecordDividend() {
 
       <!-- Holdings Table -->
       <div v-if="activeSubTab === 'holdings'" class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-border">
+        <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+          <thead class="bg-slate-100/90 dark:bg-slate-900/60 text-xs uppercase font-bold text-slate-700 dark:text-slate-400 border-b border-border">
             <tr>
               <th class="px-6 py-4">Symbol</th>
               <th class="px-6 py-4">Security Name</th>
@@ -302,18 +302,18 @@ async function handleRecordDividend() {
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="h in portfolioStore.holdings" :key="h.id" class="hover:bg-slate-800/30 transition-colors">
-              <td class="px-6 py-4 font-mono font-bold text-white">
-                <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs">
+            <tr v-for="h in portfolioStore.holdings" :key="h.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <td class="px-6 py-4 font-mono font-bold text-slate-900 dark:text-white">
+                <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs">
                   {{ h.symbol }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-sm text-slate-300 font-medium">{{ h.instrument_name }}</td>
-              <td class="px-6 py-4 text-right font-mono text-slate-200">{{ h.quantity.toLocaleString() }}</td>
-              <td class="px-6 py-4 text-right font-mono text-slate-400">{{ formatCurrency(h.average_cost_per_share, h.currency) }}</td>
-              <td class="px-6 py-4 text-right font-mono text-slate-200 font-semibold">{{ formatCurrency(h.current_price, h.currency) }}</td>
-              <td class="px-6 py-4 text-right font-mono font-bold text-white">{{ formatCurrency(h.current_market_value, h.currency) }}</td>
-              <td class="px-6 py-4 text-right font-mono font-bold" :class="h.unrealized_pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+              <td class="px-6 py-4 text-sm text-slate-700 dark:text-slate-300 font-medium">{{ h.instrument_name }}</td>
+              <td class="px-6 py-4 text-right font-mono text-slate-800 dark:text-slate-200">{{ h.quantity.toLocaleString() }}</td>
+              <td class="px-6 py-4 text-right font-mono text-slate-500 dark:text-slate-400">{{ formatCurrency(h.average_cost_per_share, h.currency) }}</td>
+              <td class="px-6 py-4 text-right font-mono text-slate-800 dark:text-slate-200 font-semibold">{{ formatCurrency(h.current_price, h.currency) }}</td>
+              <td class="px-6 py-4 text-right font-mono font-bold text-slate-900 dark:text-white">{{ formatCurrency(h.current_market_value, h.currency) }}</td>
+              <td class="px-6 py-4 text-right font-mono font-bold" :class="h.unrealized_pnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
                 {{ formatCurrency(h.unrealized_pnl, h.currency) }}
               </td>
             </tr>
@@ -328,8 +328,8 @@ async function handleRecordDividend() {
 
       <!-- Transactions Ledger Table -->
       <div v-if="activeSubTab === 'transactions'" class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-border">
+        <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+          <thead class="bg-slate-100/90 dark:bg-slate-900/60 text-xs uppercase font-bold text-slate-700 dark:text-slate-400 border-b border-border">
             <tr>
               <th class="px-6 py-4">Trade Date</th>
               <th class="px-6 py-4">Type</th>
@@ -341,18 +341,18 @@ async function handleRecordDividend() {
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="tx in transactions" :key="tx.id" class="hover:bg-slate-800/30 font-mono text-xs">
-              <td class="px-6 py-4 text-slate-300">{{ tx.trade_date }}</td>
+            <tr v-for="tx in transactions" :key="tx.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 font-mono text-xs">
+              <td class="px-6 py-4 text-slate-700 dark:text-slate-300">{{ tx.trade_date }}</td>
               <td class="px-6 py-4">
-                <span class="px-2 py-0.5 rounded font-bold" :class="tx.transaction_type === 'BUY' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'">
+                <span class="px-2 py-0.5 rounded font-bold" :class="tx.transaction_type === 'BUY' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'">
                   {{ tx.transaction_type }}
                 </span>
               </td>
-              <td class="px-6 py-4 font-bold text-white">{{ tx.symbol }}</td>
+              <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">{{ tx.symbol }}</td>
               <td class="px-6 py-4 text-right">{{ tx.quantity }}</td>
               <td class="px-6 py-4 text-right">{{ formatCurrency(tx.price_per_share, tx.currency) }}</td>
-              <td class="px-6 py-4 text-right text-slate-400">{{ formatCurrency(tx.fees + tx.taxes, tx.currency) }}</td>
-              <td class="px-6 py-4 text-right font-bold text-white">{{ formatCurrency(tx.net_amount, tx.currency) }}</td>
+              <td class="px-6 py-4 text-right text-slate-500 dark:text-slate-400">{{ formatCurrency(tx.fees + tx.taxes, tx.currency) }}</td>
+              <td class="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">{{ formatCurrency(tx.net_amount, tx.currency) }}</td>
             </tr>
           </tbody>
         </table>
@@ -360,8 +360,8 @@ async function handleRecordDividend() {
 
       <!-- Dividends Table -->
       <div v-if="activeSubTab === 'dividends'" class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-border">
+        <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+          <thead class="bg-slate-100/90 dark:bg-slate-900/60 text-xs uppercase font-bold text-slate-700 dark:text-slate-400 border-b border-border">
             <tr>
               <th class="px-6 py-4">Payable Date</th>
               <th class="px-6 py-4">Symbol</th>
@@ -372,12 +372,12 @@ async function handleRecordDividend() {
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="d in dividends" :key="d.id" class="hover:bg-slate-800/30 font-mono text-xs">
-              <td class="px-6 py-4 text-slate-300">{{ d.payable_date }}</td>
-              <td class="px-6 py-4 font-bold text-white">{{ d.symbol }}</td>
+            <tr v-for="d in dividends" :key="d.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 font-mono text-xs">
+              <td class="px-6 py-4 text-slate-700 dark:text-slate-300">{{ d.payable_date }}</td>
+              <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">{{ d.symbol }}</td>
               <td class="px-6 py-4 text-right">{{ formatCurrency(d.gross_amount, d.currency) }}</td>
-              <td class="px-6 py-4 text-right text-rose-400">{{ formatCurrency(d.withholding_tax, d.currency) }}</td>
-              <td class="px-6 py-4 text-right font-bold text-emerald-400">{{ formatCurrency(d.net_amount, d.currency) }}</td>
+              <td class="px-6 py-4 text-right text-rose-600 dark:text-rose-400">{{ formatCurrency(d.withholding_tax, d.currency) }}</td>
+              <td class="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(d.net_amount, d.currency) }}</td>
               <td class="px-6 py-4">{{ d.is_reinvested ? 'Yes' : 'Cash' }}</td>
             </tr>
           </tbody>
@@ -385,20 +385,20 @@ async function handleRecordDividend() {
       </div>
 
       <!-- Create Portfolio Modal -->
-      <div v-if="showCreatePortfolioModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div v-if="showCreatePortfolioModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-card border border-border rounded-xl w-full max-w-md p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-border pb-3">
-            <h3 class="font-bold text-white text-base">Create Portfolio</h3>
-            <button @click="showCreatePortfolioModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Create Portfolio</h3>
+            <button @click="showCreatePortfolioModal = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
           </div>
           <form @submit.prevent="handleCreatePortfolio" class="space-y-4">
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Portfolio Name</label>
-              <input v-model="newPortfolioName" required placeholder="e.g. GSE Equities, US Growth" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Portfolio Name</label>
+              <input v-model="newPortfolioName" required placeholder="e.g. GSE Equities, US Growth" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Reporting Currency</label>
-              <select v-model="newPortfolioCurrency" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white">
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Reporting Currency</label>
+              <select v-model="newPortfolioCurrency" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white">
                 <option value="GHS">GHS</option>
                 <option value="USD">USD</option>
                 <option value="GBP">GBP</option>
@@ -406,11 +406,11 @@ async function handleRecordDividend() {
               </select>
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Description</label>
-              <textarea v-model="newPortfolioDesc" rows="2" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white"></textarea>
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+              <textarea v-model="newPortfolioDesc" rows="2" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white"></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-4 border-t border-border">
-              <button @click="showCreatePortfolioModal = false" type="button" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancel</button>
+              <button @click="showCreatePortfolioModal = false" type="button" class="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
               <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg text-xs">Create</button>
             </div>
           </form>
@@ -418,24 +418,24 @@ async function handleRecordDividend() {
       </div>
 
       <!-- Record Trade Modal -->
-      <div v-if="showTradeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div v-if="showTradeModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-card border border-border rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-border pb-3">
-            <h3 class="font-bold text-white text-base">Record Investment Trade</h3>
-            <button @click="showTradeModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Record Investment Trade</h3>
+            <button @click="showTradeModal = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
           </div>
           <form @submit.prevent="handleRecordTrade" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Instrument</label>
-                <select v-model="tradeInstrumentId" @change="onInstrumentChange" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Instrument</label>
+                <select v-model="tradeInstrumentId" @change="onInstrumentChange" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white">
                   <option disabled value="">Select Ticker</option>
                   <option v-for="inst in instruments" :key="inst.id" :value="inst.id">{{ inst.symbol }} ({{ inst.exchange_code }})</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Action</label>
-                <select v-model="tradeType" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white">
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Action</label>
+                <select v-model="tradeType" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white">
                   <option value="BUY">BUY</option>
                   <option value="SELL">SELL</option>
                 </select>
@@ -443,30 +443,30 @@ async function handleRecordDividend() {
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Trade Date</label>
-                <input v-model="tradeDate" type="date" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Trade Date</label>
+                <input v-model="tradeDate" type="date" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Quantity</label>
-                <input v-model.number="tradeQty" type="number" step="0.0001" min="0.0001" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Quantity</label>
+                <input v-model.number="tradeQty" type="number" step="0.0001" min="0.0001" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Price ({{ tradeCurrency }})</label>
-                <input v-model.number="tradePrice" type="number" step="0.0001" min="0" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Price ({{ tradeCurrency }})</label>
+                <input v-model.number="tradePrice" type="number" step="0.0001" min="0" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Broker Fees</label>
-                <input v-model.number="tradeFees" type="number" step="0.01" min="0" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Broker Fees</label>
+                <input v-model.number="tradeFees" type="number" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Taxes / Levies</label>
-                <input v-model.number="tradeTaxes" type="number" step="0.01" min="0" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Taxes / Levies</label>
+                <input v-model.number="tradeTaxes" type="number" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
             </div>
             <div class="flex justify-end gap-3 pt-4 border-t border-border">
-              <button @click="showTradeModal = false" type="button" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancel</button>
+              <button @click="showTradeModal = false" type="button" class="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
               <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-xs">Submit Trade</button>
             </div>
           </form>
@@ -474,46 +474,46 @@ async function handleRecordDividend() {
       </div>
 
       <!-- Record Dividend Modal -->
-      <div v-if="showDividendModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div v-if="showDividendModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-card border border-border rounded-xl w-full max-w-md p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-border pb-3">
-            <h3 class="font-bold text-white text-base">Log Dividend Distribution</h3>
-            <button @click="showDividendModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Log Dividend Distribution</h3>
+            <button @click="showDividendModal = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
           </div>
           <form @submit.prevent="handleRecordDividend" class="space-y-4">
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">Instrument</label>
-              <select v-model="divInstrumentId" @change="onDivInstrumentChange" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-white">
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Instrument</label>
+              <select v-model="divInstrumentId" @change="onDivInstrumentChange" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white">
                 <option disabled value="">Select Ticker</option>
                 <option v-for="inst in instruments" :key="inst.id" :value="inst.id">{{ inst.symbol }} ({{ inst.exchange_code }})</option>
               </select>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Payable Date</label>
-                <input v-model="divPayableDate" type="date" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Payable Date</label>
+                <input v-model="divPayableDate" type="date" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Currency</label>
-                <input v-model="divCurrency" readonly class="w-full bg-slate-800 border border-border rounded-lg px-3 py-2 text-xs text-slate-400 font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Currency</label>
+                <input v-model="divCurrency" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-border rounded-lg px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-mono" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Gross Dividend</label>
-                <input v-model.number="divGross" type="number" step="0.01" min="0.01" required class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Gross Dividend</label>
+                <input v-model.number="divGross" type="number" step="0.01" min="0.01" required class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Withholding Tax</label>
-                <input v-model.number="divTax" type="number" step="0.01" min="0" class="w-full bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-white font-mono" />
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Withholding Tax</label>
+                <input v-model.number="divTax" type="number" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-border rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white font-mono" />
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <input v-model="divReinvested" type="checkbox" id="reinvest" class="rounded bg-slate-900 border-border" />
-              <label for="reinvest" class="text-xs text-slate-300">Dividend was automatically reinvested (DRIP)</label>
+              <input v-model="divReinvested" type="checkbox" id="reinvest" class="rounded bg-slate-50 dark:bg-slate-900 border-border" />
+              <label for="reinvest" class="text-xs text-slate-700 dark:text-slate-300">Dividend was automatically reinvested (DRIP)</label>
             </div>
             <div class="flex justify-end gap-3 pt-4 border-t border-border">
-              <button @click="showDividendModal = false" type="button" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancel</button>
+              <button @click="showDividendModal = false" type="button" class="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
               <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg text-xs">Save Dividend</button>
             </div>
           </form>
