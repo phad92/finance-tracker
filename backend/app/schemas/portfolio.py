@@ -94,3 +94,54 @@ class InvestmentTransactionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+class DividendCreate(BaseModel):
+    instrument_id: uuid.UUID
+    ex_date: Optional[date] = None
+    record_date: Optional[date] = None
+    payable_date: date = Field(default_factory=date.today)
+    gross_amount: float = Field(..., gt=0)
+    withholding_tax: float = Field(default=0.0, ge=0)
+    currency: str = Field(..., min_length=3, max_length=3)
+    exchange_rate_to_reporting: Optional[float] = None
+    is_reinvested: bool = False
+    notes: Optional[str] = None
+
+
+class DividendResponse(BaseModel):
+    id: uuid.UUID
+    portfolio_id: uuid.UUID
+    instrument_id: uuid.UUID
+    symbol: Optional[str] = None
+    ex_date: Optional[date] = None
+    record_date: Optional[date] = None
+    payable_date: date
+    gross_amount: float
+    withholding_tax: float
+    net_amount: float
+    currency: str
+    exchange_rate_to_reporting: float
+    net_amount_reporting: float
+    is_reinvested: bool
+    notes: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PortfolioPerformanceResponse(BaseModel):
+    portfolio_id: uuid.UUID
+    reporting_currency: str
+    total_market_value: float
+    total_cost_basis: float
+    total_unrealized_pnl: float
+    total_realized_pnl: float
+    total_dividends_net: float
+    total_return_amount: float
+    total_return_pct: float
+    xirr_annualized_pct: Optional[float] = None
+    twr_cumulative_pct: Optional[float] = None
+    methodology_note: str
+
+

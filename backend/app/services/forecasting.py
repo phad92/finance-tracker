@@ -1,6 +1,11 @@
+import numpy as np
 from app.schemas.forecasting import (
     GoalRequiredSavingsRequest,
     GoalRequiredSavingsResponse,
+    MonteCarloPercentiles,
+    MonteCarloRequest,
+    MonteCarloResponse,
+    MonteCarloYearPoint,
     ProjectionRequest,
     ProjectionResponse,
     YearlyProjectionPoint,
@@ -109,3 +114,79 @@ def calculate_required_monthly_savings(req: GoalRequiredSavingsRequest) -> GoalR
         projected_total_contributed=round(projected_contributions, 2),
         projected_total_growth=round(projected_gains, 2),
     )
+
+
+def calculate_monte_carlo_simulation(req: MonteCarloRequest) -> MonteCarloResponse:
+    """
+    Run vectorized Monte Carlo simulations to model probabilistic wealth outcomes
+    under market volatility (generating 5th, 25th, 50th, 75th, and 95th percentile paths).
+    """
+    total_months = req.investment_years * 12
+    monthly_mean = req.expected_annual_return / 12.0
+    monthly_vol = req.annual_volatility / np.sqrt(12.0)
+
+    # Initialize simulation matrix: (num_simulations, total_months + 1)
+    sim_wealth = np.zeros((req.num_simulations, total_months + 1))
+    sim_wealth[:, 0] = req.initial_amount
+
+    # Generate random monthly return shocks across all paths
+    np.random.seed(42)  # Deterministic seed for reproducible testing
+    monthly_returns = np.random.normal(monthly_mean, monthly_vol, (req.num_simulations, total_months))
+
+    cumulative_contributions = req.initial_amount
+    yearly_trajectory = [
+        MonteCarloYearPoint(
+            year=0,
+            percentiles=MonteCarloPercentiles(
+                p5=round(req.initial_amount, 2),
+                p25=round(req.initial_amount, 2),
+                p50=round(req.initial_amount, 2),
+                p75=round(req.initial_amount, 2),
+                p95=round(req.initial_amount, 2),
+            ),
+            total_contributions=round(req.initial_amount, 2),
+        )
+    ]
+
+    for m in range(1, total_months + 1):
+        r_m = monthly_returns[:, m - 1]
+        sim_wealth[:, m] = sim_wealth[:, m - 1] * (1.0 + r_m) + req.monthly_contribution
+
+        # At the end of each year
+        if m % 12 == 0:
+            year_idx = m // 12
+            cumulative_contributions += req.monthly_contribution * 12
+            year_vals = sim_wealth[:, m]
+
+            p5, p25, p50, p75, p95 = np.percentile(year_vals, [5, 25, 50, 75, 95])
+            yearly_trajectory.append(
+                MonteCarloYearPoint(
+                    year=year_idx,
+                    percentiles=MonteCarloPercentiles(
+                        p5=round(float(p5), 2),
+                        p25=round(float(p25), 2),
+                        p50=round(float(p50), 2),
+                        p75=round(float(p75), 2),
+                        p95=round(float(p95), 2),
+                    ),
+                    total_contributions=round(cumulative_contributions, 2),
+                )
+            )
+
+    prob_reaching_goal = None
+    if req.target_wealth_goal and req.target_wealth_goal > 0:
+        final_wealths = sim_wealth[:, -1]
+        successful_runs = np.sum(final_wealths >= req.target_wealth_goal)
+        prob_reaching_goal = round(float(successful_runs / req.num_simulations) * 100.0, 1)
+
+    return MonteCarloResponse(
+        investment_years=req.investment_years,
+        num_simulations=req.num_simulations,
+        expected_annual_return=req.expected_annual_return,
+        annual_volatility=req.annual_volatility,
+        trajectory=yearly_trajectory,
+        probability_of_reaching_goal=prob_reaching_goal,
+        target_wealth_goal=req.target_wealth_goal,
+    )
+
+

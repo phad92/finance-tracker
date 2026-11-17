@@ -5,10 +5,13 @@ from app.models.identity import User
 from app.schemas.forecasting import (
     GoalRequiredSavingsRequest,
     GoalRequiredSavingsResponse,
+    MonteCarloRequest,
+    MonteCarloResponse,
     ProjectionRequest,
     ProjectionResponse,
 )
 from app.services.forecasting import (
+    calculate_monte_carlo_simulation,
     calculate_required_monthly_savings,
     calculate_wealth_projection,
 )
@@ -38,3 +41,17 @@ async def calculate_goal_savings(
     given current principal, target horizon, expected return, and inflation.
     """
     return calculate_required_monthly_savings(request)
+
+
+@router.post("/monte-carlo", response_model=MonteCarloResponse, status_code=status.HTTP_200_OK)
+async def run_monte_carlo_simulation(
+    request: MonteCarloRequest,
+    current_user: User = Depends(get_current_user),
+) -> MonteCarloResponse:
+    """
+    Execute vectorized Monte Carlo simulations to model probabilistic wealth outcomes,
+    percentile cones (5th, 25th, 50th, 75th, 95th), and goal completion probability under market volatility.
+    """
+    return calculate_monte_carlo_simulation(request)
+
+

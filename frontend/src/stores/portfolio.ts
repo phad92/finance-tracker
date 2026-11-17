@@ -94,3 +94,4 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     recordTransaction,
   }
 })
+

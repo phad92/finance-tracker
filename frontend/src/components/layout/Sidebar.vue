@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import {
   LayoutDashboard,
   Wallet,
   PieChart,
+  Globe,
   TrendingUp,
+  BrainCircuit,
+  Bot,
+  ShieldAlert,
   LogOut,
   Sparkles,
 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'My Wealth', href: '/wealth', icon: Wallet },
   { name: 'Portfolios', href: '/portfolios', icon: PieChart },
+  { name: 'Markets', href: '/markets', icon: Globe },
   { name: 'Forecasting', href: '/forecasting', icon: TrendingUp },
+  { name: 'Research & Macro', href: '/intelligence', icon: BrainCircuit },
+  { name: 'Options & Risk', href: '/options', icon: ShieldAlert },
+  { name: 'AI Assistant', href: '/assistant', icon: Bot },
 ]
 </script>
 
@@ -73,3 +80,4 @@ const navigation = [
     </div>
   </aside>
 </template>
+

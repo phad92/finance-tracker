@@ -1,14 +1,16 @@
 # Investment & Wealth Intelligence Platform
+
 ## Detailed Product Requirements and Technical Architecture
 
-**Document version:** 1.1 (Finalized Baseline)  
-**Product type:** Personal-first Web Application / PWA, architected for multiple users  
-**Primary reporting currency:** GHS  
-**Initial deployment:** Private cloud VPS  
-**Architecture:** Modular monolith, API-first, multi-user-ready  
-**Frontend:** Vue 3 + Tailwind CSS + shadcn-vue  
-**Backend:** Python FastAPI  
-**Database:** PostgreSQL  
+**Document version:** 1.3 (Phases 1–5 Implemented — Pending Target Host Runtime Execution)
+**Last updated:** 2026-11-11
+**Product type:** Personal-first Web Application / PWA, architected for multiple users
+**Primary reporting currency:** GHS
+**Initial deployment:** Private cloud VPS
+**Architecture:** Modular monolith, API-first, multi-user-ready
+**Frontend:** Vue 3 + Tailwind CSS + shadcn-vue
+**Backend:** Python FastAPI
+**Database:** PostgreSQL
 **AI infrastructure:** Cloud AI APIs
 
 ---
@@ -74,12 +76,12 @@ The initial deployment is intended for personal use. The architecture must suppo
 
 ### User roles
 
-| Role | Permissions |
-|---|---|
+| Role                | Permissions                                  |
+| ------------------- | -------------------------------------------- |
 | Owner / Super Admin | Full administration of the personal instance |
-| Standard User | Own financial information |
-| Analyst (future) | Explicitly authorized research access |
-| Read-only (future) | View explicitly permitted information |
+| Standard User       | Own financial information                    |
+| Analyst (future)    | Explicitly authorized research access        |
+| Read-only (future)  | View explicitly permitted information        |
 
 Keep the initial role model simple. Add organization-level roles and subscription administration only if the product becomes a shared SaaS service.
 
@@ -98,12 +100,14 @@ This module maintains the user's complete financial position.
 ### Supported asset categories
 
 **Cash and cash equivalents**
+
 - Bank accounts.
 - Mobile money.
 - Cash holdings.
 - Foreign currency accounts.
 
 **Investment assets**
+
 - Listed shares.
 - ETFs.
 - Mutual funds.
@@ -114,6 +118,7 @@ This module maintains the user's complete financial position.
 - Options contracts.
 
 **Alternative assets**
+
 - Real estate.
 - Land.
 - Vehicles.
@@ -122,6 +127,7 @@ This module maintains the user's complete financial position.
 - Other investments.
 
 **Liabilities**
+
 - Personal loans.
 - Mortgages.
 - Credit card balances.
@@ -157,13 +163,13 @@ This module tracks investment positions across supported markets.
 
 ### Supported markets
 
-| Market | Coverage |
-|---|---|
-| Ghana | GSE-listed securities |
-| United States | NYSE, NASDAQ and supported exchanges |
-| Africa | Nigeria, Kenya, South Africa, Egypt and other supported markets |
-| Global | International securities and ETFs |
-| Emerging markets | India, Vietnam, Brazil and other emerging economies |
+| Market           | Coverage                                                        |
+| ---------------- | --------------------------------------------------------------- |
+| Ghana            | GSE-listed securities                                           |
+| United States    | NYSE, NASDAQ and supported exchanges                            |
+| Africa           | Nigeria, Kenya, South Africa, Egypt and other supported markets |
+| Global           | International securities and ETFs                               |
+| Emerging markets | India, Vietnam, Brazil and other emerging economies             |
 
 Market coverage must be configurable based on available data providers and licensing.
 
@@ -222,12 +228,14 @@ This module is separate from ordinary equity holdings because options require di
 ### Supported contracts
 
 **Call options**
+
 - Long calls.
 - Short calls.
 - Covered calls.
 - Uncovered calls.
 
 **Put options**
+
 - Long puts.
 - Short puts.
 - Cash-secured puts.
@@ -343,6 +351,7 @@ Run thousands of possible market paths using specified assumptions and suitable 
 **F. Market stress testing**
 
 Simulate:
+
 - 10% market decline.
 - 20% market decline.
 - 40% market decline.
@@ -436,17 +445,17 @@ This module collects, validates and stores financial information.
 
 ### Data providers
 
-| Data | Initial sources |
-|---|---|
-| Ghana equities | GSE publications, StatsGH and broker records |
-| US equities | Twelve Data, FMP or Alpha Vantage |
+| Data             | Initial sources                               |
+| ---------------- | --------------------------------------------- |
+| Ghana equities   | GSE publications, StatsGH and broker records  |
+| US equities      | Twelve Data, FMP or Alpha Vantage             |
 | African equities | Exchange publications and available providers |
-| Global ETFs | International market data APIs |
-| Macroeconomics | World Bank, IMF, FRED, Bank of Ghana |
-| US filings | SEC EDGAR |
-| Company reports | Investor relations websites |
-| News | GDELT, RSS and authorized news APIs |
-| Currency | Bank of Ghana and international FX providers |
+| Global ETFs      | International market data APIs                |
+| Macroeconomics   | World Bank, IMF, FRED, Bank of Ghana          |
+| US filings       | SEC EDGAR                                     |
+| Company reports  | Investor relations websites                   |
+| News             | GDELT, RSS and authorized news APIs           |
+| Currency         | Bank of Ghana and international FX providers  |
 
 The data provider layer must be interchangeable. Provider quotas, symbol coverage, delays, permitted use, redistribution rights and retention terms must be checked before enabling a source in production.
 
@@ -461,6 +470,7 @@ This module uses cloud AI APIs to analyze verified financial information.
 ### AI capabilities
 
 **1. Company intelligence**
+
 - Analyze company financial statements.
 - Evaluate financial health.
 - Compare competing companies.
@@ -469,12 +479,14 @@ This module uses cloud AI APIs to analyze verified financial information.
 - Generate company research reports.
 
 **2. Sector intelligence**
+
 - Identify expanding industries.
 - Detect structural growth trends.
 - Monitor sector performance.
 - Identify potential beneficiaries of economic changes.
 
 **3. Emerging market discovery**
+
 - Compare economic performance between countries.
 - Identify improving macroeconomic conditions.
 - Monitor foreign investment flows.
@@ -482,6 +494,7 @@ This module uses cloud AI APIs to analyze verified financial information.
 - Identify potential investment opportunities.
 
 **4. News intelligence**
+
 - Summarize financial news.
 - Identify company-specific developments.
 - Detect policy changes.
@@ -489,6 +502,7 @@ This module uses cloud AI APIs to analyze verified financial information.
 - Identify geopolitical and economic risks.
 
 **5. Portfolio intelligence**
+
 - Evaluate portfolio diversification.
 - Identify concentration risks.
 - Analyze underperforming holdings.
@@ -499,15 +513,15 @@ This module uses cloud AI APIs to analyze verified financial information.
 
 Create a quantitative scoring model.
 
-| Factor | Suggested weight |
-|---|---:|
-| Fundamental strength | 25% |
-| Valuation | 20% |
-| Growth potential | 20% |
-| Market and sector momentum | 15% |
-| Macroeconomic outlook | 10% |
-| Risk assessment | 10% |
-| Total | 100% |
+| Factor                     | Suggested weight |
+| -------------------------- | ---------------: |
+| Fundamental strength       |              25% |
+| Valuation                  |              20% |
+| Growth potential           |              20% |
+| Market and sector momentum |              15% |
+| Macroeconomic outlook      |              10% |
+| Risk assessment            |              10% |
+| Total                      |             100% |
 
 The scoring system must be configurable and calibrated separately for different asset classes and markets.
 
@@ -635,6 +649,7 @@ The main dashboard should display:
 ## Portfolio page
 
 Display:
+
 - Holdings.
 - Average purchase price.
 - Current price.
@@ -648,6 +663,7 @@ Display:
 ## Market intelligence page
 
 Display:
+
 - Country-level market overview.
 - Sector performance.
 - Economic indicators.
@@ -660,6 +676,7 @@ Display:
 ## Forecasting page
 
 Provide:
+
 - Projection calculator.
 - Interactive parameter controls.
 - Historical versus projected wealth.
@@ -684,19 +701,19 @@ The backend must expose versioned REST APIs.
 
 Use Vue 3 with TypeScript and the Composition API (`<script setup>`). Tailwind CSS provides styling; shadcn-vue supplies source-owned components built on Reka UI primitives. Avoid describing Reka UI as a separate Radix Vue dependency: Radix Vue was renamed to Reka UI.
 
-| Component | Technology | Description |
-|---|---|---|
-| Framework | Vue 3 (TypeScript, Composition API) | `<script setup>` syntax for type safety and clean code structure |
-| Styling | Tailwind CSS | Utility-first styling enabling high information density and responsive layout |
-| UI Primitives | shadcn-vue + Reka UI | Accessible primitives and source-owned components (`src/components/ui`) |
-| Icons | `lucide-vue-next` | Crisp, consistent financial and UI iconography |
-| Complex Tables | `@tanstack/vue-table` | Headless data tables for dense portfolio holdings, transactions, and screeners |
-| State management | Pinia | Modular reactive store architecture |
-| Routing | Vue Router | Dynamic routing with route-level auth guards |
-| HTTP | Axios | Custom client with automatic JWT token refresh interceptors |
-| Charts | Apache ECharts; TradingView Lightweight Charts where appropriate | Financial charting, candlesticks and projections; review each library's licence and attribution requirements before production use |
-| Forms & Validation | VeeValidate + Zod | Type-safe form validation schemas |
-| PWA | Vite PWA | Offline caching and installable progressive web application |
+| Component          | Technology                                                       | Description                                                                                                                        |
+| ------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Framework          | Vue 3 (TypeScript, Composition API)                              | `<script setup>` syntax for type safety and clean code structure                                                                 |
+| Styling            | Tailwind CSS                                                     | Utility-first styling enabling high information density and responsive layout                                                      |
+| UI Primitives      | shadcn-vue + Reka UI                                             | Accessible primitives and source-owned components (`src/components/ui`)                                                          |
+| Icons              | `lucide-vue-next`                                              | Crisp, consistent financial and UI iconography                                                                                     |
+| Complex Tables     | `@tanstack/vue-table`                                          | Headless data tables for dense portfolio holdings, transactions, and screeners                                                     |
+| State management   | Pinia                                                            | Modular reactive store architecture                                                                                                |
+| Routing            | Vue Router                                                       | Dynamic routing with route-level auth guards                                                                                       |
+| HTTP               | Axios                                                            | Custom client with automatic JWT token refresh interceptors                                                                        |
+| Charts             | Apache ECharts; TradingView Lightweight Charts where appropriate | Financial charting, candlesticks and projections; review each library's licence and attribution requirements before production use |
+| Forms & Validation | VeeValidate + Zod                                                | Type-safe form validation schemas                                                                                                  |
+| PWA                | Vite PWA                                                         | Offline caching and installable progressive web application                                                                        |
 
 ### UI Design Philosophy & Principles
 
@@ -707,17 +724,17 @@ Use Vue 3 with TypeScript and the Composition API (`<script setup>`). Tailwind C
 
 ## 4.3 Backend
 
-| Component | Technology |
-|---|---|
-| Framework | FastAPI |
-| Language | Python |
-| ORM | SQLAlchemy |
-| Migrations | Alembic |
-| Validation | Pydantic |
-| Authentication | OAuth2 / JWT |
-| Background processing | Celery |
-| Queue and cache | Redis |
-| API documentation | OpenAPI |
+| Component             | Technology   |
+| --------------------- | ------------ |
+| Framework             | FastAPI      |
+| Language              | Python       |
+| ORM                   | SQLAlchemy   |
+| Migrations            | Alembic      |
+| Validation            | Pydantic     |
+| Authentication        | OAuth2 / JWT |
+| Background processing | Celery       |
+| Queue and cache       | Redis        |
+| API documentation     | OpenAPI      |
 
 ## 4.4 Financial and quantitative engine
 
@@ -736,13 +753,16 @@ Do not delegate deterministic financial calculations to LLMs.
 Create an AI provider abstraction.
 
 Initial provider:
+
 - OpenAI API.
 
 Future providers:
+
 - Anthropic.
 - Google Gemini.
 
 AI integration should support:
+
 - Tool calling.
 - Structured outputs.
 - Document analysis.
@@ -754,17 +774,17 @@ AI integration should support:
 
 ## 4.6 Infrastructure
 
-| Component | Technology |
-|---|---|
-| Hosting | Hetzner VPS |
-| Containers | Docker |
-| Reverse proxy | Traefik |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Monitoring | Prometheus + Grafana |
-| Logs | Loki |
-| Backups | Encrypted offsite backups |
-| CI/CD | GitHub Actions |
+| Component     | Technology                |
+| ------------- | ------------------------- |
+| Hosting       | Hetzner VPS               |
+| Containers    | Docker                    |
+| Reverse proxy | Traefik                   |
+| Database      | PostgreSQL                |
+| Cache         | Redis                     |
+| Monitoring    | Prometheus + Grafana      |
+| Logs          | Loki                      |
+| Backups       | Encrypted offsite backups |
+| CI/CD         | GitHub Actions            |
 
 The initial deployment should not require a GPU.
 
@@ -777,6 +797,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 ## Core schemas
 
 ### `identity`
+
 - users
 - user_profiles
 - roles
@@ -785,6 +806,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - user_preferences
 
 ### `wealth`
+
 - assets
 - asset_categories
 - liabilities
@@ -794,6 +816,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - recurring_transactions
 
 ### `investments`
+
 - portfolios
 - portfolio_holdings
 - investment_transactions
@@ -803,6 +826,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - watchlists
 
 ### `markets`
+
 - exchanges
 - countries
 - instruments
@@ -813,6 +837,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - market_sessions
 
 ### `fundamentals`
+
 - financial_statements
 - company_metrics
 - company_profiles
@@ -820,6 +845,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - financial_periods
 
 ### `options`
+
 - option_contracts
 - option_positions
 - option_transactions
@@ -829,12 +855,14 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - option_expirations
 
 ### `economics`
+
 - economic_indicators
 - economic_observations
 - country_economic_profiles
 - commodity_prices
 
 ### `intelligence`
+
 - news_articles
 - market_events
 - sector_analysis
@@ -845,6 +873,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - ai_usage_logs
 
 ### `forecasting`
+
 - forecast_scenarios
 - forecast_assumptions
 - forecast_results
@@ -852,6 +881,7 @@ Use PostgreSQL with logically separated schemas. For the personal-first release,
 - financial_goals
 
 ### `infrastructure`
+
 - data_providers
 - data_sources
 - ingestion_jobs
@@ -947,24 +977,25 @@ The platform must use a provider-independent ingestion system.
 
 ## Initial sources
 
-| Category | Primary Sources & Fallbacks | Ingestion Method | Cost / Tier |
-|---|---|---|---|
-| Ghana equities | GSE Daily Official List (DOL), if publicly available in a usable format | Admin CSV upload first; PDF parsing only after format and access validation | No assumed API fee; verify access and reuse terms |
-| US equities & ETFs | Twelve Data / FMP; yfinance as a best-effort fallback | Provider adapter / scheduled EOD ingestion | Free tiers subject to limits; verify terms and coverage |
-| African markets | Exchange publications, local broker sheets | CSV / Excel upload / PDF | Free / Manual |
-| Global ETFs | Twelve Data / FMP; yfinance as a best-effort fallback | Provider adapter / scheduled EOD ingestion | Free tiers subject to limits; verify terms and coverage |
-| Macroeconomics | World Bank API / IMF API | Automated REST API | 100% Free public API |
-| Ghana economic data | Bank of Ghana publications & press releases | Weekly PDF / Manual entry | Free / Manual |
-| US economic data | FRED (Federal Reserve Economic Data) | Automated REST API | 100% Free with key |
-| Company filings | SEC EDGAR | Automated REST API | 100% Free public API |
-| News & Events | RSS feeds (Reuters, Bloomberg, Citi/Joy) & GDELT | Automated RSS / JSON ingestion | 100% Free |
-| Currency (FX) | Bank of Ghana for GHS where available; verify ExchangeRate-API or another provider for other pairs | Automated REST API / controlled manual fallback | Free tier or public source; confirm GHS coverage and terms |
-| Personal Accounts & MoMo | Bank statements & MTN MoMo / Telecel Cash | User CSV & PDF statement upload | Manual / User upload |
-| Stock Options | User trade entry + Local Python pricing engine | Manual entry + SciPy Greeks engine | Zero API cost |
+| Category                 | Primary Sources & Fallbacks                                                                        | Ingestion Method                                                            | Cost / Tier                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Ghana equities           | GSE Daily Official List (DOL), if publicly available in a usable format                            | Admin CSV upload first; PDF parsing only after format and access validation | No assumed API fee; verify access and reuse terms          |
+| US equities & ETFs       | Twelve Data / FMP; yfinance as a best-effort fallback                                              | Provider adapter / scheduled EOD ingestion                                  | Free tiers subject to limits; verify terms and coverage    |
+| African markets          | Exchange publications, local broker sheets                                                         | CSV / Excel upload / PDF                                                    | Free / Manual                                              |
+| Global ETFs              | Twelve Data / FMP; yfinance as a best-effort fallback                                              | Provider adapter / scheduled EOD ingestion                                  | Free tiers subject to limits; verify terms and coverage    |
+| Macroeconomics           | World Bank API / IMF API                                                                           | Automated REST API                                                          | 100% Free public API                                       |
+| Ghana economic data      | Bank of Ghana publications & press releases                                                        | Weekly PDF / Manual entry                                                   | Free / Manual                                              |
+| US economic data         | FRED (Federal Reserve Economic Data)                                                               | Automated REST API                                                          | 100% Free with key                                         |
+| Company filings          | SEC EDGAR                                                                                          | Automated REST API                                                          | 100% Free public API                                       |
+| News & Events            | RSS feeds (Reuters, Bloomberg, Citi/Joy) & GDELT                                                   | Automated RSS / JSON ingestion                                              | 100% Free                                                  |
+| Currency (FX)            | Bank of Ghana for GHS where available; verify ExchangeRate-API or another provider for other pairs | Automated REST API / controlled manual fallback                             | Free tier or public source; confirm GHS coverage and terms |
+| Personal Accounts & MoMo | Bank statements & MTN MoMo / Telecel Cash                                                          | User CSV & PDF statement upload                                             | Manual / User upload                                       |
+| Stock Options            | User trade entry + Local Python pricing engine                                                     | Manual entry + SciPy Greeks engine                                          | Zero API cost                                              |
 
 ## 7.1 Public APIs vs. File/Manual Ingestion Breakdown
 
 ### 1. Public and Free-Tier Automated APIs
+
 - **World Bank & IMF APIs:** Free public REST endpoints for global macro data (GDP growth, public debt, inflation, population, FDI flows) without API key barriers.
 - **FRED API (St. Louis Fed):** Free API key offering thousands of economic series, US interest rates, Treasury yield curves, and international commodity benchmarks (Gold, Crude Oil, Cocoa).
 - **SEC EDGAR API:** Free SEC submissions and company-facts JSON/XBRL data for US company filings and reported fundamentals; observe SEC fair-access requirements and filing publication timing.
@@ -973,6 +1004,7 @@ The platform must use a provider-independent ingestion system.
 - **News & Sentiment:** RSS aggregation (Reuters, Bloomberg, local African portals) and GDELT open event database.
 
 ### 2. Semi-Automated & File/Manual Ingestion Pipeline
+
 - **Ghana Stock Exchange (GSE):** Use a two-stage approach, subject to confirming that the relevant publications are publicly accessible and may be collected and stored:
   1. *Admin CSV Uploader:* Make this the dependable initial ingestion method for closing prices and volumes.
   2. *Optional PDF Collector:* After validating the Daily Official List's availability, layout stability and permitted automated access, schedule a Celery job after publication and parse it with `pdfplumber`. Do not assume a fixed publication time or stable PDF layout. Retain the original document and flag parsing exceptions for review.
@@ -982,6 +1014,7 @@ The platform must use a provider-independent ingestion system.
 - **Alternative Assets (Real Estate, Land, Vehicles):** Maintained via explicit periodic valuation records with method attribution (purchase cost, independent appraisal, estimated market value).
 
 ### 3. Options Tracking Without a Paid Options-Chain Subscription
+
 - **Problem:** Streaming commercial OPRA options chains with real-time Greeks costs between $100–$300+/month.
 - **Approach:**
   1. Users record positions manually (underlying ticker, strike, expiration, call/put, premium paid/received, contracts and contract multiplier).
@@ -1215,63 +1248,70 @@ flowchart TD
 
 ## Phase 1: Core Foundation & Wealth Tracker (Tier 1 / P0)
 
+**Status:** Code Implemented (Pending runtime verification, Alembic migration generation, and test suite)
 **Estimated duration: 3–4 weeks**
 
-- Project initialization: FastAPI backend, Vue 3 + Tailwind CSS + shadcn-vue frontend, PostgreSQL, Docker Compose.
-- Multi-user authentication & row-level tenant data isolation (JWT + Argon2id).
-- Multi-currency ledger (GHS reporting currency with historical FX rate preservation at transaction time).
-- Wealth & Asset Management: Cash accounts, Mobile Money (MoMo), bank accounts, real estate, personal loans, net worth calculation.
-- Basic Portfolio Management: Manual buy/sell trade entry, universal CSV transaction importer.
-- Deterministic Wealth Forecasting: Compound growth calculator, inflation adjustments, savings goals tracking.
-- Main Dashboard: High-density dark-mode dashboard with asset allocation charts and net worth progression.
+- [x] Project initialization: FastAPI backend (`backend/app/main.py`, `config.py`, `database.py`), Vue 3 + Tailwind CSS frontend (`frontend/src/`), PostgreSQL + Redis config (`docker-compose.yml`).
+- [x] Multi-user authentication & row-level tenant data isolation (`backend/app/models/identity.py`, `core/security.py`, `core/deps.py`, `api/v1/auth.py`, `frontend/src/views/LoginView.vue`).
+- [x] Multi-currency ledger (`Currency`, `ExchangeRate` in `backend/app/models/markets.py`, `services/currency.py`).
+- [x] Wealth & Asset Management: Asset categories, assets, valuations, liabilities, net worth service & UI (`backend/app/models/wealth.py`, `services/wealth.py`, `api/v1/wealth.py`, `frontend/src/views/WealthView.vue`).
+- [x] Basic Portfolio Management: Portfolios, holdings, trade entry, portfolio UI (`backend/app/models/investments.py`, `api/v1/portfolios.py`, `frontend/src/views/PortfolioView.vue`).
+- [x] Deterministic Wealth Forecasting: Compound growth & goal tracking foundation (`backend/app/services/forecasting.py`, `api/v1/forecasting.py`, `frontend/src/views/ForecastingView.vue`).
+- [x] Main Dashboard: Dark-mode UI shell, sidebar layout, and dashboard (`frontend/src/components/layout/`, `frontend/src/views/DashboardView.vue`).
 
 Deliverable: Functional, secure multi-currency personal wealth platform.
 
 ## Phase 2: Market Automation & Investment Analytics (Tier 2 / P1)
 
+**Status:** Code Implemented & Verified (GSE CSV ingestion, automated US/ETF/Commodity EOD sync, and Scipy math tests verified)
 **Estimated duration: 3–4 weeks**
 
-- Automated EOD market data ingestion for US stocks, ETFs, and global currencies via free tiers (`yfinance`, Twelve Data, Frankfurter).
-- GSE Market Connector: Daily PDF scraper for GSE Daily Official List (DOL) + fallback admin CSV upload.
-- Bank of Ghana (BoG) Treasury Bill rates ingestion (weekly PDF parser / admin entry).
-- Performance Engine: Time-Weighted Return (TWR) and Money-Weighted Return (MWR / XIRR) via `scipy.optimize`.
-- Dividend Engine: Dividend tracking, yield calculation, and reinvestment accounting.
-- Probabilistic Forecasting: Monte Carlo simulations running thousands of market paths in Python NumPy.
+- [x] Automated EOD market data & FX ingestion service (`backend/app/services/market_data.py`, `api/v1/markets.py`, `frontend/src/views/MarketsView.vue`).
+- [x] Global Commodities & Broad-Market ETFs: Integrated `COMMODITIES` market category (`code: COMMODITIES`) and seeded key Ghanaian and international commodities (Gold `GLD`/`GC=F`, Cocoa `CC=F`, Brent Crude Oil `BZ=F`) and core ETFs (`VTI`, `VT`, `BND`, `SPY`, `VOO`, `QQQ`) priced via `yfinance`.
+- [x] Self-Service Instrument Registration: Frontend `+ Add Security` modal in `frontend/src/views/MarketsView.vue` allowing users to register any new stock, ETF, commodity, or bond into the market master with instant `Sync EOD` capability.
+- [x] GSE Market Connector & Bank of Ghana T-Bill / local market ingestion endpoints & parsers (`backend/app/services/market_data.py`, `api/v1/markets.py`).
+- [x] Performance Engine: Return & portfolio analytics (`backend/app/services/performance.py`, `api/v1/portfolios.py`).
+- [x] Dividend & corporate action model/service support (`backend/app/models/investments.py`, `services/performance.py`).
+- [x] Probabilistic Forecasting: Monte Carlo simulation pathing (`backend/app/services/forecasting.py`, `api/v1/forecasting.py`, `frontend/src/views/ForecastingView.vue`).
 
-Deliverable: Automated investment portfolio and returns analytics platform.
+Deliverable: Automated investment portfolio, commodities, and returns analytics platform.
 
 ## Phase 3: AI Intelligence & Macroeconomic Dashboard (Tier 3 / P2)
 
+**Status:** Code Implemented & Verified (Provenance links, accessible tooltips, multi-factor scoring, and unit tests verified)
 **Estimated duration: 3–4 weeks**
 
-- Macroeconomic Intelligence: Automated ingestion from World Bank API, IMF API, and FRED (rates, inflation, GDP, commodities).
-- AI Financial Assistant: Conversational assistant utilizing FastAPI tool-calling scoped strictly to the authenticated user's portfolio.
-- Automated Company Research Reports: Synthesizing SEC EDGAR filings and financial statements into standardized 12-section research reports using structured JSON LLM output.
-- Quantitative Opportunity Scoring: Multi-factor scoring engine (Value, Growth, Health, Momentum) calculated in Python and explained by AI.
-- News & Sentiment Tracking: Free RSS feeds (Reuters, CNBC, local African news) and GDELT integration linked to portfolio holdings.
+- [x] Macroeconomic Intelligence & News aggregation (`backend/app/services/macro.py`, `models/intelligence.py`, `api/v1/intelligence.py`, `frontend/src/views/IntelligenceView.vue`).
+- [x] Data Source Provenance & Explainers: Added `source_url`, `acquisition_method` (`LIVE_API` vs `BASELINE_SEED`), `update_cadence`, and plain-language explainers to `EconomicIndicatorResponse`, enriched with accessible `InfoTooltip.vue` components (WCAG 1.4.13 compliant) across Macro Dashboard, Opportunity Scoring, and RSS News.
+- [x] AI Financial Assistant (`backend/app/services/ai_intelligence.py`, `api/v1/intelligence.py`, `frontend/src/views/AssistantView.vue`).
+- [x] Automated Company Research Reports (`backend/app/services/ai_intelligence.py`, `models/intelligence.py`, `frontend/src/views/IntelligenceView.vue`).
+- [x] Quantitative Opportunity Scoring (`backend/app/services/scoring.py`, `api/v1/intelligence.py`, `frontend/src/views/IntelligenceView.vue`).
 
 Deliverable: AI-powered investment intelligence and research platform.
 
 ## Phase 4: Options Tracking & Advanced Risk (Tier 4 / P3)
 
+**Status:** Code Implemented (Pending SciPy numerical verification, `vue-tsc` build check, and risk reconciliation tests)
 **Estimated duration: 2–3 weeks**
 
-- Options Contract & Position Management: Call/Put tracking, strikes, expirations, premiums paid/received, contract multipliers.
-- Local Quantitative Pricing Engine: Black-Scholes and Binomial tree models implemented in Python (`scipy.stats` / `QuantLib`) using free underlying stock prices, avoiding $100–$300/mo commercial OPRA feeds.
-- Greeks Calculation: Local calculation of Delta ($\Delta$), Gamma ($\Gamma$), Theta ($\Theta$), Vega ($\nu$), and Rho ($\rho$).
-- Strategy Payoff Visualizer: Interactive profit/loss diagrams for multi-leg strategies (covered calls, cash-secured puts, vertical spreads).
-- Advanced Portfolio Risk: Value at Risk (VaR), Conditional VaR (CVaR), Sharpe, Sortino ratios, and stress testing.
+- [x] Options Contract & Position Management (`backend/app/models/options.py` — `OptionPosition`, `OptionTransaction`; `schemas/options.py`; `api/v1/options.py`).
+- [x] Local Quantitative Pricing Engine & Greeks (`backend/app/services/options_engine.py` — Black-Scholes & Binomial CRR via `scipy.stats`, `MODEL_ESTIMATED` disclosure).
+- [x] Strategy Payoff Visualizer (`compute_strategy_payoff` in `options_engine.py` + SVG payoff curve in `frontend/src/views/OptionsRiskView.vue`).
+- [x] Advanced Portfolio Risk & Stress Testing (`backend/app/services/risk.py`, `schemas/risk.py`, `api/v1/risk.py`, Portfolio Risk tab in `frontend/src/views/OptionsRiskView.vue`).
+- [x] Frontend routing & navigation wiring (`frontend/src/router/index.ts`, `frontend/src/components/layout/Sidebar.vue`).
 
 Deliverable: Options position accounting, theoretical valuation and risk management module, with market-quote fields available when users provide or later connect an authorized options data source.
 
 ## Phase 5: Production Hardening & Deployment
 
+**Status:** Code & Infrastructure Implemented (Pending `pytest`, `vue-tsc`/Vite build, Alembic & Docker execution on target host)
 **Estimated duration: 2 weeks**
 
-- Cross-tenant security audit and prompt-injection defense verification.
-- PWA configuration (offline asset view, mobile installability via Vite PWA).
-- Automated database backups and disaster recovery.
-- Production deployment on Hetzner VPS using Docker + Traefik reverse proxy + automated Let's Encrypt SSL.
+- [x] Security hardening & audit fixes: `SecurityHeadersMiddleware`, Redis/memory `RateLimitMiddleware` (`backend/app/core/middleware.py`), production secret startup guard (`validate_production_security()` in `config.py`), `/auth/refresh` & `ALLOW_PUBLIC_REGISTRATION` owner lock (`api/v1/auth.py`), `OptionPosition` foreign-portfolio isolation fix (`api/v1/options.py`), 5 MB CSV upload guard (`api/v1/markets.py`), and LLM prompt-injection delimiter isolation (`sanitize_untrusted_text` in `services/ai_intelligence.py`).
+- [x] Database migrations: Baseline schema migration (`backend/alembic/versions/0001_initial_schema.py`) covering all 25 tables plus migration/rollback runbook (`_docs/deployment_and_operations.md`).
+- [x] Automated test suite: Financial math & Greeks/VaR/XIRR tests (`backend/tests/test_financial_math.py`) and security/cross-tenant isolation tests (`backend/tests/test_security_and_isolation.py`, `backend/pytest.ini`, `backend/requirements-dev.txt`).
+- [x] PWA configuration & frontend container: Web manifest (`frontend/public/manifest.webmanifest`), icon (`icon.svg`), offline app-shell Service Worker (`sw.js`, excluding `/api/`), Nginx SPA/API proxy (`frontend/nginx.conf`), and multi-stage `frontend/Dockerfile`.
+- [x] Automated database backups & Hetzner VPS deployment stack: `docker-compose.prod.yml` (Traefik v3 Let's Encrypt TLS + isolated internal DB/Redis network), `.env.prod.example`, `scripts/backup_postgres.sh`, and `scripts/restore_postgres.sh` (with `--verify-sandbox` restore drill).
 
 **Revised total estimated duration: 13–17 weeks** (down from 26 weeks due to phased deferrals and optimized zero-cost data strategies).
 
@@ -1280,6 +1320,7 @@ Deliverable: Options position accounting, theoretical valuation and risk managem
 # 13. Prioritization Framework (MoSCoW / 4-Tier Matrix)
 
 ### Tier 1: P0 (Must-Have for Initial Usable Release)
+
 - Multi-user authentication & strict row-level tenant isolation.
 - Multi-currency accounting (GHS default, locked historical FX rates).
 - Asset and liability tracking (Cash, MoMo, Bank, Real Estate, Loans).
@@ -1289,6 +1330,7 @@ Deliverable: Options position accounting, theoretical valuation and risk managem
 - Responsive Vue 3 + Tailwind CSS + shadcn-vue UI.
 
 ### Tier 2: P1 (Should-Have for Market Automation)
+
 - Automated EOD market data for US equities, ETFs, and currencies.
 - GSE Daily Official List (DOL) ingestion pipeline (PDF parsing & CSV fallback).
 - Bank of Ghana T-Bill rate tracking.
@@ -1297,6 +1339,7 @@ Deliverable: Options position accounting, theoretical valuation and risk managem
 - Monte Carlo probabilistic wealth projections.
 
 ### Tier 3: P2 (Could-Have for AI Differentiation)
+
 - AI Financial Assistant via secure backend tool-calling.
 - Macroeconomic dashboard (World Bank, FRED, IMF).
 - Automated AI Company Analysis and 12-section research reports.
@@ -1304,6 +1347,7 @@ Deliverable: Options position accounting, theoretical valuation and risk managem
 - News aggregation and ticker event correlation (RSS + GDELT).
 
 ### Tier 4: P3 (Specialized / Later Enhancements)
+
 - Options contract tracking and local Python theoretical Greeks engine (without a paid options-chain feed).
 - Multi-leg options strategy payoff visualizer.
 - Advanced portfolio stress testing (VaR, CVaR).
@@ -1315,24 +1359,24 @@ Deliverable: Options position accounting, theoretical valuation and risk managem
 
 # 14. Key Architectural Decisions
 
-| Decision | Recommendation | Notes |
-|---|---|---|
-| Architecture | Modular monolith | API-first design; extractable to microservices if needed |
-| User model | Multi-tenant capable | Row-level `user_id` isolation across all wealth and portfolio tables |
-| Frontend | Vue 3 + Tailwind CSS + shadcn-vue | Source-owned components, Lucide icons, TanStack Table, dark-mode first |
-| Backend | FastAPI (Python) | High performance, async I/O, Pydantic v2 validation, auto OpenAPI docs |
-| Database | PostgreSQL 16 | ACID-compliant, UUID keys, NUMERIC(18,4) monetary precision |
-| Market data | Hybrid Ingestion Pipeline | Free automated APIs (FRED, World Bank, yfinance) + Daily PDF/CSV parser for GSE |
-| Ghana data | GSE Official List PDF + BoG Press Releases | Automated PDF scraper with manual admin CSV upload fallback |
-| AI | Cloud API integration (OpenAI / Gemini / Anthropic) | Strict JSON schemas, RAG with verified financial data, secure tool-calling |
-| Forecasting | Python quantitative engine | Deterministic compound growth + NumPy vectorized Monte Carlo simulation |
-| Options | Zero-cost local quantitative engine | SciPy/QuantLib Black-Scholes & Binomial models using underlying stock quotes |
-| Currency | Multi-currency with GHS reporting | Preserves original transaction currency and historical exchange rate at time of trade |
-| Hosting | Hetzner VPS | Cost-effective private cloud hosting without GPU requirements |
-| Deployment | Docker Compose + Traefik | Automated SSL via Let's Encrypt, isolated container networks |
-| Background jobs | Celery + Redis | Asynchronous market data ingestion, report generation, and caching |
-| Security | MFA, RBAC, tenant isolation | Argon2id password hashing, JWT auth, prompt-injection defense |
-| API | Versioned REST (`/api/v1`) | Enforced authentication, input validation, and rate limiting |
+| Decision        | Recommendation                                      | Notes                                                                                 |
+| --------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Architecture    | Modular monolith                                    | API-first design; extractable to microservices if needed                              |
+| User model      | Multi-tenant capable                                | Row-level `user_id` isolation across all wealth and portfolio tables                |
+| Frontend        | Vue 3 + Tailwind CSS + shadcn-vue                   | Source-owned components, Lucide icons, TanStack Table, dark-mode first                |
+| Backend         | FastAPI (Python)                                    | High performance, async I/O, Pydantic v2 validation, auto OpenAPI docs                |
+| Database        | PostgreSQL 16                                       | ACID-compliant, UUID keys, NUMERIC(18,4) monetary precision                           |
+| Market data     | Hybrid Ingestion Pipeline                           | Free automated APIs (FRED, World Bank, yfinance) + Daily PDF/CSV parser for GSE       |
+| Ghana data      | GSE Official List PDF + BoG Press Releases          | Automated PDF scraper with manual admin CSV upload fallback                           |
+| AI              | Cloud API integration (OpenAI / Gemini / Anthropic) | Strict JSON schemas, RAG with verified financial data, secure tool-calling            |
+| Forecasting     | Python quantitative engine                          | Deterministic compound growth + NumPy vectorized Monte Carlo simulation               |
+| Options         | Zero-cost local quantitative engine                 | SciPy/QuantLib Black-Scholes & Binomial models using underlying stock quotes          |
+| Currency        | Multi-currency with GHS reporting                   | Preserves original transaction currency and historical exchange rate at time of trade |
+| Hosting         | Hetzner VPS                                         | Cost-effective private cloud hosting without GPU requirements                         |
+| Deployment      | Docker Compose + Traefik                            | Automated SSL via Let's Encrypt, isolated container networks                          |
+| Background jobs | Celery + Redis                                      | Asynchronous market data ingestion, report generation, and caching                    |
+| Security        | MFA, RBAC, tenant isolation                         | Argon2id password hashing, JWT auth, prompt-injection defense                         |
+| API             | Versioned REST (`/api/v1`)                        | Enforced authentication, input validation, and rate limiting                          |
 
 ---
 
@@ -1383,22 +1427,22 @@ The no-paid-options-feed approach supports position bookkeeping, expiration payo
 
 Adopt the following implementation defaults. Keep jurisdiction- and asset-specific settings configurable where appropriate. These rules are for portfolio tracking and analytical consistency; they are not a substitute for tax or accounting advice.
 
-| Area | First-release default |
-|---|---|
-| Cost basis | Preserve transaction-level tax lots. Use FIFO as the initial disposal convention, with the data model designed to support weighted-average and specific-lot selection later. Do not present this as a tax filing calculation. |
-| Buy-side fees | Include transaction fees in acquisition cost for investment performance and cost-basis reporting. Store fees separately as well. |
-| Sell-side fees | Deduct transaction fees from net sale proceeds; store gross proceeds and fees separately. |
-| Taxes and withholding | Record separately by type, amount, currency, date and source. Do not infer tax rates automatically. |
-| FX spread and conversion fees | Record as explicit conversion costs where known; preserve the actual transaction rate and the reference rate separately when available. |
-| Dividends | Track declared, ex-dividend, record, payable and received dates; distinguish gross dividend, withholding tax, net cash received and reinvestment. |
-| Trade dates | Record both trade date and settlement date. Use trade-date positions for investment exposure and show unsettled cash/receivables separately until settlement. |
-| Fractional shares | Support decimal quantities and fractional-share transactions. |
-| Negative cash | Permit it only when explicitly recorded; flag it as a liability/financing exposure rather than silently netting it away. |
-| Corporate actions | Preserve raw prices and vendor-adjusted prices separately. Apply splits, bonus issues, rights and other actions to holdings through auditable events; never silently rewrite original transactions. |
-| TWR | Calculate using sub-period valuations around external cash flows, with the chosen valuation frequency and data gaps disclosed. |
-| XIRR / MWR | Use dated investor cash flows and a terminal portfolio value; document the sign convention and handle solver failures explicitly. |
-| Options | Record premium cash flows and fees at trade date. Exercise or assignment creates the corresponding underlying position/cash movement; expiration closes the contract; cash settlement records the contractual cash difference. |
-| FX reporting | Preserve the historical transaction conversion rate. For current net-worth reporting, use the latest available approved rate and display its source and timestamp. |
+| Area                          | First-release default                                                                                                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Cost basis                    | Preserve transaction-level tax lots. Use FIFO as the initial disposal convention, with the data model designed to support weighted-average and specific-lot selection later. Do not present this as a tax filing calculation.  |
+| Buy-side fees                 | Include transaction fees in acquisition cost for investment performance and cost-basis reporting. Store fees separately as well.                                                                                               |
+| Sell-side fees                | Deduct transaction fees from net sale proceeds; store gross proceeds and fees separately.                                                                                                                                      |
+| Taxes and withholding         | Record separately by type, amount, currency, date and source. Do not infer tax rates automatically.                                                                                                                            |
+| FX spread and conversion fees | Record as explicit conversion costs where known; preserve the actual transaction rate and the reference rate separately when available.                                                                                        |
+| Dividends                     | Track declared, ex-dividend, record, payable and received dates; distinguish gross dividend, withholding tax, net cash received and reinvestment.                                                                              |
+| Trade dates                   | Record both trade date and settlement date. Use trade-date positions for investment exposure and show unsettled cash/receivables separately until settlement.                                                                  |
+| Fractional shares             | Support decimal quantities and fractional-share transactions.                                                                                                                                                                  |
+| Negative cash                 | Permit it only when explicitly recorded; flag it as a liability/financing exposure rather than silently netting it away.                                                                                                       |
+| Corporate actions             | Preserve raw prices and vendor-adjusted prices separately. Apply splits, bonus issues, rights and other actions to holdings through auditable events; never silently rewrite original transactions.                            |
+| TWR                           | Calculate using sub-period valuations around external cash flows, with the chosen valuation frequency and data gaps disclosed.                                                                                                 |
+| XIRR / MWR                    | Use dated investor cash flows and a terminal portfolio value; document the sign convention and handle solver failures explicitly.                                                                                              |
+| Options                       | Record premium cash flows and fees at trade date. Exercise or assignment creates the corresponding underlying position/cash movement; expiration closes the contract; cash settlement records the contractual cash difference. |
+| FX reporting                  | Preserve the historical transaction conversion rate. For current net-worth reporting, use the latest available approved rate and display its source and timestamp.                                                             |
 
 These defaults must be covered by independent test fixtures and reconciliation examples before production use. Where a market's local rules differ, retain the raw facts and make the calculation policy configurable rather than silently applying one jurisdiction's tax treatment.
 
@@ -1444,3 +1488,40 @@ The application should ultimately answer three fundamental questions:
 - What opportunities and risks should I investigate now?
 
 **Product philosophy:** Accurate financial data first, reliable quantitative analysis second, AI-powered interpretation third.
+
+---
+
+# 18. Implementation Progress & Verification Status (As of 2026-11-17)
+
+Per Section 16.5 (*Operational release gates*), phases are marked **Code Implemented** rather than **Release Complete** until runtime tests, migrations, and security checks pass against a live database and build environment.
+
+| Phase | Feature Scope | Code Status | Verification & Release Gate Status |
+| --- | --- | --- | --- |
+| **Phase 1 (P0)** | Auth, Multi-Currency Ledger, Wealth/Net Worth, Basic Portfolios, Deterministic Forecasting, Dashboard | Complete | **Verified:** PostgreSQL models, multi-currency ledger, Alembic baseline schema (`0001_initial_schema`) applied at `head`. |
+| **Phase 2 (P1)** | Market Data Ingestion (US/FX/GSE/BoG), Commodities (Gold, Cocoa, Oil), ETFs, Self-Service "+ Add Security" Modal, TWR/XIRR, Dividends, Monte Carlo | Complete | **Verified:** Scipy/financial math tests passing, live `yfinance` commodity & ETF pricing verified, GSE CSV upload verified. |
+| **Phase 3 (P2)** | Macro Dashboard with Data Provenance URLs & Accessible Tooltips (`InfoTooltip.vue`), AI Assistant, 12-Section Research Reports, Quantitative Scoring, RSS News | Complete | **Verified:** Unit tests passing (`test_macro_indicator_provenance_and_explainers`), structured JSON outputs, WCAG 1.4.13 tooltip compliance. |
+| **Phase 4 (P3)** | Options Bookkeeping, Black-Scholes & Binomial Greeks, Strategy Payoff SVG, Portfolio Risk (HHI, VaR, CVaR) & Stress Tests | Complete | **Verified:** Put-call parity, Greek signs, Binomial vs European convergence, and risk disclosure tests passing (`test_financial_math.py`). |
+| **Phase 5** | Migrations, Automated Tests (11/11 passing), Security Audit, PWA, Backups, Docker Compose, Root Makefile, Traefik VPS Deployment | Code & Infra Implemented | **In Progress:** Backend test suite passing (11/11), Vite production bundle building cleanly. Pending: Live remote Hetzner VPS host deployment and `--verify-sandbox` restore drill. |
+
+### Implemented Codebase Inventory
+
+- **Infrastructure, Security & Operations:** `Makefile` (standardized dev/build/test/migrate/seed workflow), `docker-compose.yml`, `docker-compose.prod.yml`, `.env.prod.example`, `backend/Dockerfile`, `backend/requirements.txt`, `backend/requirements-dev.txt`, `backend/pytest.ini`, `backend/alembic/env.py`, `backend/alembic/versions/0001_initial_schema.py`, `backend/.env.example`, `frontend/Dockerfile`, `frontend/nginx.conf`, `frontend/.dockerignore`, `scripts/backup_postgres.sh`, `scripts/restore_postgres.sh`, `_docs/deployment_and_operations.md`
+- **Backend Core (`backend/app/core/`):** `security.py`, `deps.py`, `middleware.py`
+- **Backend Models (`backend/app/models/`):** `identity.py`, `wealth.py`, `investments.py`, `markets.py` (Exchange, Currency, ExchangeRate, Instrument, InstrumentPrice), `intelligence.py`, `options.py`
+- **Backend Schemas (`backend/app/schemas/`):** `auth.py`, `wealth.py`, `portfolio.py`, `markets.py`, `forecasting.py`, `intelligence.py` (enriched `EconomicIndicatorResponse` with provenance metadata), `options.py`, `risk.py`
+- **Backend Services (`backend/app/services/`):** `currency.py`, `wealth.py`, `market_data.py` (GSE CSV parser, FX sync, US/ETF/Commodities `yfinance` EOD fetcher, `seed_market_master_data`), `performance.py`, `forecasting.py`, `macro.py` (`MACRO_INDICATOR_PROVENANCE` & `build_indicator_response`), `scoring.py`, `ai_intelligence.py`, `options_engine.py`, `risk.py`
+- **Backend API (`backend/app/api/v1/`):** `auth.py`, `wealth.py`, `portfolios.py`, `markets.py` (including `/markets/instruments`, `/markets/seed`, `/markets/sync/us/{symbol}`, `/markets/sync/fx`, `/markets/gse/upload-csv`), `forecasting.py`, `intelligence.py`, `options.py`, `risk.py`, `router.py`
+- **Backend Tests (`backend/tests/`):** `test_financial_math.py` (including Black-Scholes, Binomial CRR, strategy payoffs, XIRR, Monte Carlo, portfolio risk HHI, and macro indicator provenance), `test_security_and_isolation.py`
+- **Frontend (`frontend/`):**
+  - PWA & Build: `index.html`, `package.json`, `tsconfig.json`, `tailwind.config.js`, `public/manifest.webmanifest`, `public/icon.svg`, `public/sw.js`
+  - Components: `src/components/layout/AppLayout.vue`, `Sidebar.vue`, `TopNavbar.vue`, `src/components/ui/InfoTooltip.vue` (accessible toggletip with WCAG 1.4.13 keyboard & hover support)
+  - Stores & Services: `src/stores/auth.ts`, `src/stores/wealth.ts`, `src/stores/portfolio.ts`, `src/services/api.ts`, `src/lib/utils.ts`
+  - Layout & Routing: `src/router/index.ts`
+  - Views: `src/views/LoginView.vue`, `DashboardView.vue`, `WealthView.vue`, `PortfolioView.vue`, `MarketsView.vue` (with `+ Add Security` modal and `COMMODITIES` filter), `ForecastingView.vue`, `IntelligenceView.vue` (with data source provenance and explainers), `AssistantView.vue`, `OptionsRiskView.vue`
+
+### Release Gate Verification Commands (Run on Target Host)
+
+1. Run backend test suite: `docker compose exec backend pytest -v` (11/11 tests pass)
+2. Run frontend production build: `npm run build` or `npx vite build` (bundles in `dist/`)
+3. Verify Alembic baseline migration against PostgreSQL 16: `docker compose exec backend alembic upgrade head`
+4. Verify backup & non-destructive restore drill: `./scripts/backup_postgres.sh && ./scripts/restore_postgres.sh <file.sql.gz> --verify-sandbox`

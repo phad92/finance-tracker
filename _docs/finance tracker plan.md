@@ -1225,20 +1225,23 @@ Deliverable: Functional, secure multi-currency personal wealth platform.
 
 **Estimated duration: 3–4 weeks**
 
-- Automated EOD market data ingestion for US stocks, ETFs, and global currencies via free tiers (`yfinance`, Twelve Data, Frankfurter).
-- GSE Market Connector: Daily PDF scraper for GSE Daily Official List (DOL) + fallback admin CSV upload.
+- Automated EOD market data ingestion for US stocks, broad-market ETFs (`SPY`, `VOO`, `VTI`, `VT`, `QQQ`, `BND`), and global currencies via free tiers (`yfinance`, Frankfurter).
+- Commodities Market Ingestion: Added `COMMODITIES` exchange and pre-seeded Gold (`GLD`, `GC=F`), Cocoa (`CC=F`), and Brent Crude Oil (`BZ=F`) with live EOD price updates via `yfinance`.
+- Self-Service Instrument Registry: Frontend `+ Add Security` modal in `MarketsView.vue` allowing users to register and track any stock, ETF, commodity, or bond.
+- GSE Market Connector: Daily PDF scraper for GSE Daily Official List (DOL) + admin CSV upload.
 - Bank of Ghana (BoG) Treasury Bill rates ingestion (weekly PDF parser / admin entry).
 - Performance Engine: Time-Weighted Return (TWR) and Money-Weighted Return (MWR / XIRR) via `scipy.optimize`.
 - Dividend Engine: Dividend tracking, yield calculation, and reinvestment accounting.
 - Probabilistic Forecasting: Monte Carlo simulations running thousands of market paths in Python NumPy.
 
-Deliverable: Automated investment portfolio and returns analytics platform.
+Deliverable: Automated investment portfolio, commodities, and returns analytics platform.
 
 ## Phase 3: AI Intelligence & Macroeconomic Dashboard (Tier 3 / P2)
 
 **Estimated duration: 3–4 weeks**
 
 - Macroeconomic Intelligence: Automated ingestion from World Bank API, IMF API, and FRED (rates, inflation, GDP, commodities).
+- Data Source Provenance & Explainers: Full provenance attribution (`source_url`, `acquisition_method` Live API vs Baseline Seed, `update_cadence`, and plain-language explainers) with accessible `InfoTooltip.vue` toggletips across macro indicators, opportunity scores, and RSS feeds.
 - AI Financial Assistant: Conversational assistant utilizing FastAPI tool-calling scoped strictly to the authenticated user's portfolio.
 - Automated Company Research Reports: Synthesizing SEC EDGAR filings and financial statements into standardized 12-section research reports using structured JSON LLM output.
 - Quantitative Opportunity Scoring: Multi-factor scoring engine (Value, Growth, Health, Momentum) calculated in Python and explained by AI.

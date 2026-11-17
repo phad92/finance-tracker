@@ -7,17 +7,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user, get_db
 from app.models.identity import User
-from app.models.investments import InvestmentTransaction, Portfolio, PortfolioHolding
+from app.models.investments import Dividend, InvestmentTransaction, Portfolio, PortfolioHolding
 from app.models.markets import Instrument
 from app.schemas.portfolio import (
+    DividendCreate,
+    DividendResponse,
     InvestmentTransactionCreate,
     InvestmentTransactionResponse,
     PortfolioCreate,
     PortfolioHoldingResponse,
+    PortfolioPerformanceResponse,
     PortfolioResponse,
     PortfolioUpdate,
 )
 from app.services.currency import convert_amount
+from app.services.performance import calculate_portfolio_performance
 
 router = APIRouter(prefix="/portfolios", tags=["Portfolio Management"])
 
@@ -292,4 +296,175 @@ async def record_transaction(
         notes=new_tx.notes,
         created_at=new_tx.created_at,
     )
+
+
+@router.get("/{portfolio_id}/transactions", response_model=List[InvestmentTransactionResponse])
+async def list_portfolio_transactions(
+    portfolio_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> List[InvestmentTransactionResponse]:
+    """List investment transaction ledger entries for a specific portfolio."""
+    p_stmt = select(Portfolio).where(Portfolio.id == portfolio_id, Portfolio.user_id == current_user.id)
+    if not (await db.execute(p_stmt)).scalar_one_or_none():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Portfolio not found")
+
+    stmt = (
+        select(InvestmentTransaction)
+        .where(InvestmentTransaction.portfolio_id == portfolio_id, InvestmentTransaction.user_id == current_user.id)
+        .options(selectinload(InvestmentTransaction.instrument))
+        .order_by(desc(InvestmentTransaction.trade_date), desc(InvestmentTransaction.created_at))
+    )
+    txs = (await db.execute(stmt)).scalars().all()
+    return [
+        InvestmentTransactionResponse(
+            id=tx.id,
+            portfolio_id=tx.portfolio_id,
+            instrument_id=tx.instrument_id,
+            symbol=tx.instrument.symbol if tx.instrument else None,
+            transaction_type=tx.transaction_type,
+            trade_date=tx.trade_date,
+            settlement_date=tx.settlement_date,
+            quantity=float(tx.quantity),
+            price_per_share=float(tx.price_per_share),
+            gross_amount=float(tx.gross_amount),
+            fees=float(tx.fees),
+            taxes=float(tx.taxes),
+            net_amount=float(tx.net_amount),
+            currency=tx.currency,
+            exchange_rate_to_reporting=float(tx.exchange_rate_to_reporting),
+            net_amount_reporting=float(tx.net_amount_reporting),
+            cost_basis_allocated=float(tx.cost_basis_allocated) if tx.cost_basis_allocated else None,
+            realized_gain_loss=float(tx.realized_gain_loss) if tx.realized_gain_loss else None,
+            notes=tx.notes,
+            created_at=tx.created_at,
+        )
+        for tx in txs
+    ]
+
+
+@router.get("/{portfolio_id}/performance", response_model=PortfolioPerformanceResponse)
+async def get_portfolio_performance(
+    portfolio_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> PortfolioPerformanceResponse:
+    """Compute portfolio XIRR (money-weighted return), TWR, and total return breakdown."""
+    try:
+        return await calculate_portfolio_performance(db, portfolio_id, current_user.id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Portfolio not found")
+
+
+@router.get("/{portfolio_id}/dividends", response_model=List[DividendResponse])
+async def list_portfolio_dividends(
+    portfolio_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> List[DividendResponse]:
+    """List dividend payouts recorded in a specific portfolio."""
+    p_stmt = select(Portfolio).where(Portfolio.id == portfolio_id, Portfolio.user_id == current_user.id)
+    if not (await db.execute(p_stmt)).scalar_one_or_none():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Portfolio not found")
+
+    stmt = (
+        select(Dividend)
+        .where(Dividend.portfolio_id == portfolio_id, Dividend.user_id == current_user.id)
+        .options(selectinload(Dividend.instrument))
+        .order_by(desc(Dividend.payable_date))
+    )
+    divs = (await db.execute(stmt)).scalars().all()
+    return [
+        DividendResponse(
+            id=d.id,
+            portfolio_id=d.portfolio_id,
+            instrument_id=d.instrument_id,
+            symbol=d.instrument.symbol if d.instrument else None,
+            ex_date=d.ex_date,
+            record_date=d.record_date,
+            payable_date=d.payable_date,
+            gross_amount=float(d.gross_amount),
+            withholding_tax=float(d.withholding_tax),
+            net_amount=float(d.net_amount),
+            currency=d.currency,
+            exchange_rate_to_reporting=float(d.exchange_rate_to_reporting),
+            net_amount_reporting=float(d.net_amount_reporting),
+            is_reinvested=d.is_reinvested,
+            notes=d.notes,
+            created_at=d.created_at,
+        )
+        for d in divs
+    ]
+
+
+@router.post("/{portfolio_id}/dividends", response_model=DividendResponse, status_code=status.HTTP_201_CREATED)
+async def record_dividend(
+    portfolio_id: uuid.UUID,
+    div_in: DividendCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> DividendResponse:
+    """Record a dividend distribution (gross, withholding tax, net cash received)."""
+    p_stmt = select(Portfolio).where(Portfolio.id == portfolio_id, Portfolio.user_id == current_user.id)
+    portfolio = (await db.execute(p_stmt)).scalar_one_or_none()
+    if not portfolio:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Portfolio not found")
+
+    inst = await db.get(Instrument, div_in.instrument_id)
+    if not inst:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Instrument not found")
+
+    net_amount = round(div_in.gross_amount - div_in.withholding_tax, 4)
+
+    if div_in.exchange_rate_to_reporting is not None:
+        rate = div_in.exchange_rate_to_reporting
+        net_reporting = round(net_amount * rate, 4)
+    else:
+        net_reporting, rate = await convert_amount(
+            db=db,
+            amount=net_amount,
+            from_currency=div_in.currency,
+            to_currency=portfolio.reporting_currency,
+            rate_date=div_in.payable_date,
+        )
+
+    new_div = Dividend(
+        user_id=current_user.id,
+        portfolio_id=portfolio_id,
+        instrument_id=div_in.instrument_id,
+        ex_date=div_in.ex_date,
+        record_date=div_in.record_date,
+        payable_date=div_in.payable_date,
+        gross_amount=div_in.gross_amount,
+        withholding_tax=div_in.withholding_tax,
+        net_amount=net_amount,
+        currency=div_in.currency.upper().strip(),
+        exchange_rate_to_reporting=rate,
+        net_amount_reporting=net_reporting,
+        is_reinvested=div_in.is_reinvested,
+        notes=div_in.notes,
+    )
+    db.add(new_div)
+    await db.flush()
+    await db.refresh(new_div)
+
+    return DividendResponse(
+        id=new_div.id,
+        portfolio_id=new_div.portfolio_id,
+        instrument_id=new_div.instrument_id,
+        symbol=inst.symbol,
+        ex_date=new_div.ex_date,
+        record_date=new_div.record_date,
+        payable_date=new_div.payable_date,
+        gross_amount=float(new_div.gross_amount),
+        withholding_tax=float(new_div.withholding_tax),
+        net_amount=float(new_div.net_amount),
+        currency=new_div.currency,
+        exchange_rate_to_reporting=float(new_div.exchange_rate_to_reporting),
+        net_amount_reporting=float(new_div.net_amount_reporting),
+        is_reinvested=new_div.is_reinvested,
+        notes=new_div.notes,
+        created_at=new_div.created_at,
+    )
+
 

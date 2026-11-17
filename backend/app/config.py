@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Investment & Wealth Intelligence Platform"
     VERSION: str = "1.1.0"
     API_V1_STR: str = "/api/v1"
+    ENVIRONMENT: str = "development"  # development, staging, production
     DEBUG: bool = False
 
     # Security
@@ -21,6 +22,26 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day for personal dev
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+    ALLOW_PUBLIC_REGISTRATION: bool = True
+    DOCS_ENABLED: bool = True
+    AUTH_RATE_LIMIT_PER_MINUTE: int = 20
+    AI_RATE_LIMIT_PER_MINUTE: int = 30
+
+    def validate_production_security(self) -> None:
+        """Fail fast on insecure defaults when running in production."""
+        if self.ENVIRONMENT.lower() == "production":
+            if (
+                not self.SECRET_KEY
+                or len(self.SECRET_KEY) < 32
+                or self.SECRET_KEY.startswith("super_secret_jwt_key")
+            ):
+                raise RuntimeError(
+                    "Production startup blocked: SECRET_KEY must be set to a strong, unique >=32-char value."
+                )
+            if self.POSTGRES_PASSWORD == "postgres_secret_change_me":
+                raise RuntimeError(
+                    "Production startup blocked: POSTGRES_PASSWORD must not use the default development secret."
+                )
 
     # Default Reporting Currency
     DEFAULT_REPORTING_CURRENCY: str = "GHS"
@@ -57,6 +78,13 @@ class Settings(BaseSettings):
     @property
     def redis_url(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+
+    # AI & External Data Providers (Optional: Graceful fallback when unset)
+    AI_PROVIDER: str = "openai"  # openai, gemini, local_fallback
+    AI_MODEL: str = "gpt-4o-mini"
+    OPENAI_API_KEY: Union[str, None] = None
+    GEMINI_API_KEY: Union[str, None] = None
+    FRED_API_KEY: Union[str, None] = None
 
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = [

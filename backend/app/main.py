@@ -6,14 +6,21 @@ from sqlalchemy import select
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.middleware import RateLimitMiddleware, SecurityHeadersMiddleware
 from app.database import AsyncSessionLocal, async_engine, Base
+import app.models  # noqa: F401
 from app.models.markets import Currency
 from app.models.wealth import AssetCategory
+from app.services.macro import seed_macro_indicators
+from app.services.market_data import seed_market_master_data
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Startup and shutdown lifecycle handler."""
+    # 0. Enforce production security configuration invariants
+    settings.validate_production_security()
+
     # 1. Create database schema tables on startup if they don't exist
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -49,6 +56,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             session.add_all(categories)
 
         await session.commit()
+        await seed_market_master_data(session)
+        await seed_macro_indicators(session)
 
     yield
 
@@ -56,15 +65,21 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await async_engine.dispose()
 
 
+_docs_active = settings.DOCS_ENABLED and settings.ENVIRONMENT.lower() != "production"
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="Investment & Wealth Intelligence Platform - Personal-first, multi-tenant capable API",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    docs_url=f"{settings.API_V1_STR}/docs",
-    redoc_url=f"{settings.API_V1_STR}/redoc",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json" if _docs_active else None,
+    docs_url=f"{settings.API_V1_STR}/docs" if _docs_active else None,
+    redoc_url=f"{settings.API_V1_STR}/redoc" if _docs_active else None,
     lifespan=lifespan,
 )
+
+# Defensive HTTP headers & endpoint rate limiting
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 # Configure CORS
 if settings.BACKEND_CORS_ORIGINS:

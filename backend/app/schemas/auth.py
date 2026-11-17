@@ -23,6 +23,10 @@ class Token(BaseModel):
     expires_in: int
 
 
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
 class TokenPayload(BaseModel):
     sub: Optional[str] = None
     type: Optional[str] = None

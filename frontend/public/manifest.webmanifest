@@ -1,0 +1,20 @@
+{
+  "name": "Wealth & Investment Intelligence Platform",
+  "short_name": "WealthIntel",
+  "description": "Personal-first multi-currency wealth tracker, market intelligence, forecasting, and options risk platform.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

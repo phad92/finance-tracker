@@ -36,7 +36,7 @@ export interface Asset {
   id: string
   category_id: string
   category_name?: string
-  name: str
+  name: string
   institution?: string
   currency: string
   ownership_percentage: number
@@ -146,3 +146,4 @@ export const useWealthStore = defineStore('wealth', () => {
     createLiability,
   }
 })
+
